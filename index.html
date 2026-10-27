@@ -84,7 +84,7 @@
   <p class="coins">Monedas totales: <b>● <span id="totalCoins">0</span></b></p>
   <button id="play">Empezar partida</button>
   <p class="hint" id="current"></p>
-  <p class="hint">WASD: mover · Flechas: disparar (dos flechas = diagonal) · Q / E: arma anterior / siguiente · 1 a 9: poderes · R: ulti · Esc: pausa</p>
+  <p class="hint">WASD: mover · Flechas o clic mantenido del ratón: disparar (dos flechas = diagonal) · Q / E: arma anterior / siguiente · 1 a 9: poderes · R, F, Espacio o clic derecho: ulti · Esc: pausa</p>
   <div class="tabs" id="tabs"></div>
   <div id="shop"></div>
 </div>
@@ -215,10 +215,9 @@ const WEAPONS = {
       { id: 'bigcal', name: 'Calibre grueso', kind: 'once', cost: 800, desc: 'Bala más grande y +50% de daño' },
       { id: 'triple', name: 'Disparo triple', kind: 'once', cost: 1200, desc: 'Dispara 3 balas perforantes: la central y dos laterales algo abiertas hacia los lados' },
       { id: 'r_indep', name: 'Daño por bala', kind: 'once', cost: 40000, req: 'triple', desc: 'Cada una de las 3 balas hace su propio daño al mismo enemigo (antes solo contaba una vez entre las tres)' },
-      { id: 'r_five', name: 'Disparo de 5 balas', kind: 'once', cost: 100000, req: 'r_indep', desc: 'Dispara 5 balas perforantes en abanico, cada una con su propio daño' },
-      { id: 'r_quint', name: 'Disparo quíntuple', kind: 'once', cost: 300000, req: 'r_five', desc: 'El disparo de 5 balas se repite 5 veces seguidas (cada 0,1 s): 25 balas por disparo, cada una con su propio daño' }
+      { id: 'r_five', name: 'Disparo de 5 balas', kind: 'once', cost: 300000, req: 'r_indep', desc: 'Dispara 5 balas perforantes en abanico, cada una con su propio daño' }
     ],
-    stats: lv => ({ dmg: (40 + 8 * lv_(lv, 'dmg_rifle')) * (lv_(lv, 'bigcal') ? 1.5 : 1), big: !!lv_(lv, 'bigcal'), triple: !!lv_(lv, 'triple'), indep: !!lv_(lv, 'r_indep'), five: !!lv_(lv, 'r_five'), quint: !!lv_(lv, 'r_quint') })
+    stats: lv => ({ dmg: (40 + 8 * lv_(lv, 'dmg_rifle')) * (lv_(lv, 'bigcal') ? 1.5 : 1), big: !!lv_(lv, 'bigcal'), triple: !!lv_(lv, 'triple'), indep: !!lv_(lv, 'r_indep'), five: !!lv_(lv, 'r_five') })
   },
   mg: {
     name: 'Ametralladora', cost: 1500, cooldown: 0.08, desc: 'Cadencia altísima, poco daño por bala y algo de desvío (cada 0,08 s)',
@@ -478,6 +477,7 @@ function saveBadge(mapId, time) {
       delete lv[id]; changed = true;
     }
   }
+  if (lv.r_quint) { setTotal(getTotal() + 300000); delete lv.r_quint; changed = true; }   // mejora retirada: se devuelven las monedas
   if (lv.l_dmg2) { setTotal(getTotal() + 4000); delete lv.l_dmg2; changed = true; }   // mejora retirada: se devuelven las monedas
   const CAPS = { iframes: 4, f_range: 7, f_width: 5, f_cool: 5, f_vent: 5, l_rate: 4 };
   for (const k in CAPS) if (lv[k] > CAPS[k]) { lv[k] = CAPS[k]; changed = true; }
@@ -613,22 +613,41 @@ addEventListener('resize', onResize); resize();
 
 const keys = {};
 const ARROWS = ['arrowup', 'arrowdown', 'arrowleft', 'arrowright'];
+// nombre de la tecla según su posición física (no cambia con mayúsculas, Bloq Mayús ni distribución del teclado)
+function kname(e) {
+  const c = e.code || '';
+  if (c.startsWith('Key')) return c.slice(3).toLowerCase();
+  if (c.startsWith('Arrow')) return c.toLowerCase();
+  if (c === 'Space') return ' ';
+  return e.key.toLowerCase();
+}
+const GAME_KEYS = new Set(['w', 'a', 's', 'd', 'q', 'e', 'r', 'f', 'i', 'j', 'k', 'l', ' ', ...ARROWS]);
 addEventListener('keydown', e => {
-  const k = e.key.toLowerCase();
+  const k = kname(e);
   if (k === 'escape') { togglePause(); e.preventDefault(); return; }
   keys[k] = true;
   if (k === 'r' && state.over) { start(); return; }
   if (e.key === 'Enter' && inMenu) start();
   if (!inMenu && !state.over && !state.paused) {
-    if (k === 'q') cycleWeapon(-1);              // arma anterior
-    else if (k === 'e') cycleWeapon(1);          // arma siguiente
-    else if (k === 'r') useUlt();                // ulti del arma
-    else { const p = POWERS.find(p => p.key === e.key); if (p) usePower(p); }
-  }
-  if (ARROWS.includes(k) || k === ' ') e.preventDefault();
+    if (!e.repeat) {
+      if (k === 'q') cycleWeapon(-1);              // arma anterior
+      else if (k === 'e') cycleWeapon(1);          // arma siguiente
+      else if (k === 'r' || k === 'f' || k === ' ') useUlt();   // ulti del arma (R, F o Espacio: así no hace falta R si el teclado no registra tantas teclas)
+      else { const p = POWERS.find(p => p.key === e.key); if (p) usePower(p); }
+    }
+    if (GAME_KEYS.has(k) && !e.ctrlKey && !e.metaKey && !e.altKey) e.preventDefault();
+  } else if (ARROWS.includes(k) || k === ' ') e.preventDefault();
 });
-addEventListener('keyup', e => keys[e.key.toLowerCase()] = false);
-addEventListener('blur', () => { for (const k in keys) keys[k] = false; });
+addEventListener('keyup', e => { keys[kname(e)] = false; keys[e.key.toLowerCase()] = false; });
+// ratón: mantener el clic izquierdo dispara hacia el cursor (libera las flechas si el teclado no registra tantas teclas a la vez)
+const mouse = { x: 0, y: 0, down: false };
+canvas.addEventListener('mousedown', e => { if (e.button === 0) { mouse.down = true; mouse.x = e.clientX; mouse.y = e.clientY; } });
+addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+addEventListener('mouseup', e => { if (e.button === 0) mouse.down = false; });
+canvas.addEventListener('contextmenu', e => e.preventDefault());
+canvas.addEventListener('mousedown', e => { if (e.button === 2 && !inMenu && state && !state.over && !state.paused) useUlt(); });   // clic derecho = ulti
+document.addEventListener('visibilitychange', () => { for (const k in keys) keys[k] = false; mouse.down = false; });
+addEventListener('blur', () => { for (const k in keys) keys[k] = false; mouse.down = false; });
 
 document.getElementById('again').onclick = () => start();
 document.getElementById('play').onclick = () => start();
@@ -818,6 +837,11 @@ function renderSettings(container, inMenu) {
     renderSettings(container, inMenu);
   }, SND.muted ? 'sec' : 'on');
   addRow(container, 'Sonido', 'Activa o silencia todos los efectos', mute);
+  let dbg = false; try { dbg = localStorage.getItem('circuloArenaKeyDbg') === '1'; } catch (e) {}
+  addRow(container, 'Mostrar teclas detectadas', 'Muestra abajo qué teclas registra tu teclado. Si al pulsar varias a la vez alguna no sale, es el teclado (límite de teclas simultáneas), no el juego', mkBtn(dbg ? 'Activado' : 'Desactivado', false, () => {
+    try { localStorage.setItem('circuloArenaKeyDbg', dbg ? '0' : '1'); } catch (e) {}
+    renderSettings(container, inMenu);
+  }, dbg ? 'on' : 'sec'));
   {   // trucos para probar (en el menú y en la pausa)
     container.insertAdjacentHTML('beforeend', '<h2>Trucos</h2>');
     addRow(container, 'Dame 10.000 de oro', 'Suma 10.000 monedas a tu total', mkBtn('+10k', false, () => { setTotal(getTotal() + 10000); sfx('buy'); if (inMenu) renderShop(); }, 'sec'));
@@ -1106,9 +1130,15 @@ function pushOutOfRects(o, r) {
 
 // ============ COMBATE ============
 function aimVec() {
-  const dx = (keys['arrowright'] ? 1 : 0) - (keys['arrowleft'] ? 1 : 0);
-  const dy = (keys['arrowdown'] ? 1 : 0) - (keys['arrowup'] ? 1 : 0);
-  if (!dx && !dy) return null;
+  const dx = (keys['arrowright'] || keys['l'] ? 1 : 0) - (keys['arrowleft'] || keys['j'] ? 1 : 0);
+  const dy = (keys['arrowdown'] || keys['k'] ? 1 : 0) - (keys['arrowup'] || keys['i'] ? 1 : 0);
+  if (!dx && !dy) {
+    if (mouse.down && player && !inMenu) {   // disparo con el ratón hacia el cursor
+      const mx = cam.x + mouse.x / Z - player.x, my = cam.y + mouse.y / Z - player.y, l = Math.hypot(mx, my);
+      if (l > 4) return { x: mx / l, y: my / l };
+    }
+    return null;
+  }
   const l = Math.hypot(dx, dy);
   return { x: dx / l, y: dy / l };
 }
@@ -1222,7 +1252,6 @@ function shoot(a, echo) {
   player.cdMax = ws.cooldown !== undefined ? ws.cooldown : w.cooldown;
   player.cd = player.cdMax;
   if (id === 'shotgun' && ws.double2) state.echo = { t: 0.05, a: { x: a.x, y: a.y } };
-  if (id === 'rifle' && ws.quint) state.rEcho = { t: 0.1, left: 4, a: { x: a.x, y: a.y } };
 }
 
 function burst(x, y, color, n) {
@@ -1577,13 +1606,6 @@ function update(dt) {
   if (state.boom2 && state.boom2.length) {   // segunda explosión de los cohetes
     for (const q of state.boom2) { q.t -= dt; if (q.t <= 0) { explode(q.x, q.y, q.r, q.dmg); q.done = true; } }
     state.boom2 = state.boom2.filter(q => !q.done);
-  }
-  if (state.rEcho) {   // rifle: disparo quíntuple (el abanico se repite 5 veces)
-    state.rEcho.t -= dt;
-    if (state.rEcho.t <= 0) {
-      if (stats.weapon === 'rifle') shoot(state.rEcho.a, true);
-      if (--state.rEcho.left <= 0 || stats.weapon !== 'rifle') state.rEcho = null; else state.rEcho.t = 0.1;
-    }
   }
   if (state.ultEcho) {   // segunda volea de la ulti de la escopeta
     state.ultEcho.t -= dt;
@@ -2853,7 +2875,7 @@ function draw() {
   const ownedN = Object.keys(WEAPONS).filter(id => owns(id, stats.lv)).length;
   ctx.fillText('Arma: ' + WEAPONS[stats.weapon].name + (ownedN > 1 ? '  (Q / E para cambiar)' : ''), 20, 98);
   ctx.textAlign = 'right'; ctx.font = '13px system-ui'; ctx.fillStyle = 'rgba(255,255,255,.6)';
-  ctx.fillText('WASD: mover · Flechas: disparar · Esc: pausa', W - 20, 28);
+  ctx.fillText('WASD: mover · Flechas / clic: disparar · Esc: pausa', W - 20, 28);
 
   // calor del lanzallamas
   if (stats.weapon === 'flame' || state.heat > 0.02) {
@@ -2870,6 +2892,10 @@ function draw() {
     bar(bx, 66, bw, 16, boss.hp / boss.maxHp, boss.shield > 0 ? '#38bdf8' : '#e11d48');
     ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 2; ctx.strokeRect(bx, 66, bw, 16);
   }
+  try { if (localStorage.getItem('circuloArenaKeyDbg') === '1') {   // diagnóstico: teclas que registra el navegador
+    const pressed = Object.keys(keys).filter(k => keys[k]).map(k => k === ' ' ? 'ESPACIO' : k.toUpperCase());
+    ctx.textAlign = 'center'; ctx.font = 'bold 15px system-ui'; ctx.fillStyle = '#fde047'; ctx.fillText('Teclas detectadas: ' + (pressed.join(' + ') || '—') + (mouse.down ? ' + CLIC' : ''), W / 2, H - 14);
+  } } catch (e) {}
   if (state.flash > 0) { ctx.globalAlpha = Math.min(1, state.flash / 0.8) * 0.8; ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, W, H); ctx.globalAlpha = 1; }
   // aviso de la llegada del jefe
   if (state.banner) {

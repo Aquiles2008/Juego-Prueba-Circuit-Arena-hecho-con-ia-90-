@@ -65,6 +65,7 @@
   <p id="records" class="rec"></p>
   <div class="row">
     <button id="again">Jugar otra vez (R)</button>
+    <button id="infinite" style="display:none">Modo infinito</button>
     <button id="toMenu" class="sec">Menú y mejoras</button>
   </div>
 </div>
@@ -153,7 +154,7 @@ const CFG = {
     // ---- Jefes ----
     final:  { name: 'Titán',         hp: 3500, speed: 40, size: 52, dmg: 60, value: 300, color: '#be123c' },   // jefe de los 5:00
     final2: { name: 'Rey Fantasma',  hp: 7000, speed: 70, size: 56, dmg: 60, value: 600, phantom: true, color: '#c084fc', eye: '#f43f5e' },   // jefe de los 10:00
-    // ---- Ronda arcoíris (15:00 – 18:00): figuras que cambian de color ----
+    // ---- Ronda arcoíris (15:00 – 20:00): figuras que cambian de color ----
     rbCircle: { name: 'Círculo arcoíris',    hp: 2500,  speed: 70,  size: 16, dmg: 40,  value: 60,  rb: true, color: '#e879f9', shape: 'circle' },    // anillo de balas cada 3 s y 3 balas paralelas cada 1 s (60 de daño)
     rbTri:    { name: 'Triángulo arcoíris',  hp: 1200,  speed: 330, size: 13, dmg: 0,   value: 60,  rb: true, color: '#e879f9', shape: 'poly:3' },    // muy rápido: al tocarte estalla (300) y te ralentiza 2 s
     rbSq:     { name: 'Cuadrado arcoíris',   hp: 20000, speed: 35,  size: 40, dmg: 800, value: 400, rb: true, color: '#e879f9', shape: 'square' },    // lento, 20k de vida, 800 de daño
@@ -163,19 +164,20 @@ const CFG = {
     rbPent2:  { name: 'Pentágono pequeño',   hp: 1000,  speed: 65,  size: 19, dmg: 400, value: 40,  rb: true, color: '#e879f9', shape: 'poly:5' },    // 1/3 de la vida del mediano
     rbHex:    { name: 'Hexágono arcoíris',   hp: 4000,  speed: 60,  size: 22, dmg: 80,  value: 100, rb: true, color: '#e879f9', shape: 'poly:6' },    // carga un láser 4 s y lo mantiene 2 s (400)
     rbOct:    { name: 'Octógono arcoíris',   hp: 8000,  speed: 70,  size: 30, dmg: 150, value: 80,  rb: true, color: '#e879f9', shape: 'poly:8' },    // se parte en 2 más pequeños, 3 veces
+    rbOctG:   { name: 'Octógono gigante',    hp: 16000, speed: 55,  size: 44, dmg: 250, value: 160, rb: true, color: '#e879f9', shape: 'poly:8' },    // el octógono grande que no se mata a tiempo
     rbOct1:   { name: 'Octógono mediano',    hp: 4000,  speed: 110, size: 22, dmg: 100, value: 40,  rb: true, color: '#e879f9', shape: 'poly:8' },
     rbOct2:   { name: 'Octógono pequeño',    hp: 2000,  speed: 150, size: 16, dmg: 60,  value: 20,  rb: true, color: '#e879f9', shape: 'poly:8' },
     rbOct3:   { name: 'Octógono diminuto',   hp: 1000,  speed: 210, size: 11, dmg: 30,  value: 10,  rb: true, color: '#e879f9', shape: 'poly:8' },
     rbStar4:  { name: 'Estrella 4 puntas',   hp: 3000,  speed: 60,  size: 18, dmg: 50,  value: 100, rb: true, color: '#e879f9', shape: 'star:4' },    // cura a los enemigos con explosiones y al morir
     rbStar5:  { name: 'Estrella 5 puntas',   hp: 2500,  speed: 60,  size: 18, dmg: 50,  value: 100, rb: true, color: '#e879f9', shape: 'star:5' },    // disparo teledirigido que te daña y cura a los enemigos
-    rbStar8:  { name: 'Estrella 8 puntas',   hp: 3500,  speed: 50,  size: 20, dmg: 60,  value: 120, rb: true, color: '#e879f9', shape: 'star:8' },    // dispara por las 8 puntas y se copia cada 10 s
+    rbStar8:  { name: 'Estrella 8 puntas',   hp: 3500,  speed: 50,  size: 20, dmg: 60,  value: 120, rb: true, color: '#e879f9', shape: 'star:8' },    // dispara por las 8 puntas y se copia cada 6 s
     rbCross:  { name: 'Cruz arcoíris',       hp: 3500,  speed: 60,  size: 20, dmg: 60,  value: 100, rb: true, color: '#e879f9', shape: 'cross' },     // gira y dispara láseres por sus puntas
     rbArrow:  { name: 'Flecha arcoíris',     hp: 2500,  speed: 60,  size: 14, dmg: 150, value: 80,  rb: true, color: '#e879f9', shape: 'arrow' },     // apunta y se lanza sin corregir
     rbMoon:   { name: 'Medialuna arcoíris',  hp: 3500,  speed: 85,  size: 18, dmg: 70,  value: 100, rb: true, color: '#e879f9', shape: 'moon' },      // aura que te ralentiza
     rbBolt:   { name: 'Rayo arcoíris',       hp: 1800,  speed: 220, size: 13, dmg: 70,  value: 80,  rb: true, color: '#e879f9', shape: 'bolt' },      // al morir acelera a los que tiene cerca
     rbSpiral: { name: 'Espiral arcoíris',    hp: 2500,  speed: 100, size: 16, dmg: 40,  value: 100, rb: true, color: '#e879f9', shape: 'spiral' },    // al tocarte invierte tus controles 5 s
     rbDrop:   { name: 'Gota arcoíris',       hp: 2000,  speed: 110, size: 14, dmg: 60,  value: 80,  rb: true, color: '#e879f9', shape: 'drop' },      // al morir deja un charco de daño
-    final4: { name: 'Polígono Arcoíris', hp: 100000, speed: 50, size: 66, dmg: 120, value: 3000, rb: true, color: '#e879f9' },   // jefe de los 18:00 (4 fases)
+    final4: { name: 'Polígono Arcoíris', hp: 300000, speed: 50, size: 66, dmg: 200, value: 3000, rb: true, color: '#e879f9' },   // jefe de los 20:00 (4 fases)
     final3: { name: 'Mecha Titán',  hp: 20000, speed: 55, size: 60, dmg: 90, value: 1500, robot: true, color: '#64748b' }   // jefe de los 15:00 (cierra la ronda robot)
   }
 };
@@ -194,9 +196,9 @@ const WEAPONS = {
     stats: lv => ({ dmg: 10 + 2 * lv_(lv, 'dmg_pistol'), double: !!lv_(lv, 'double'), pierce: !!lv_(lv, 'p_pierce'), triple: !!lv_(lv, 'p_triple') })
   },
   shotgun: {
-    name: 'Escopeta', cost: 1000, cooldown: 0.7, desc: '5 proyectiles con pequeña dispersión (cada 0,7 s)',
+    name: 'Escopeta', cost: 1000, cooldown: 0.7 / 0.85, desc: '5 proyectiles con pequeña dispersión (cada 0,82 s)',
     upgrades: [
-      { id: 'dmg_shotgun', name: 'Daño', kind: 'level', base: 40, max: 13, softMax: 10, text: l => `${10 + 2 * l} por perdigón`, next: l => `${10 + 2 * (l + 1)} por perdigón` },
+      { id: 'dmg_shotgun', name: 'Daño', kind: 'level', base: 40, max: 13, softMax: 10, text: l => `${(0.744 * (10 + 2 * l)).toFixed(1)} por perdigón`, next: l => `${(0.744 * (10 + 2 * (l + 1))).toFixed(1)} por perdigón` },
       { id: 'sg_double2', name: 'Doble disparo doble', kind: 'once', cost: 100000, req: 'sg_double', desc: 'Duplica los proyectiles de cada disparo, también el segundo (el ángulo de disparo no cambia)' },
       { id: 'sg_double', name: 'Doble disparo', kind: 'once', cost: 8000, desc: 'Cada disparo se repite una segunda vez 0,05 s después' },
       { id: 'sg_pierce', name: 'Perdigones perforantes', kind: 'once', cost: 3200, desc: 'Cada perdigón atraviesa 1 enemigo' },
@@ -206,7 +208,7 @@ const WEAPONS = {
       { id: 'sg_p4', name: 'Proyectil extra IV', kind: 'once', cost: 30000, req: 'sg_p3', desc: '+1 proyectil (requiere el nivel III)' },
       { id: 'pellets', name: 'Perdigones extra', kind: 'level', base: 400, max: 5, text: l => `${5 + l} proyectiles`, next: l => `${5 + l + 1} proyectiles` }
     ],
-    stats: lv => ({ dmg: 10 + 2 * lv_(lv, 'dmg_shotgun'), pellets: (5 + lv_(lv, 'pellets') + ['sg_p1', 'sg_p2', 'sg_p3', 'sg_p4'].filter(k => lv_(lv, k)).length) * (lv_(lv, 'sg_double2') ? 2 : 1), pierce: !!lv_(lv, 'sg_pierce'), double2: !!lv_(lv, 'sg_double') })
+    stats: lv => ({ dmg: 0.744 * (10 + 2 * lv_(lv, 'dmg_shotgun')), pellets: (5 + lv_(lv, 'pellets') + ['sg_p1', 'sg_p2', 'sg_p3', 'sg_p4'].filter(k => lv_(lv, k)).length) * (lv_(lv, 'sg_double2') ? 2 : 1), pierce: !!lv_(lv, 'sg_pierce'), double2: !!lv_(lv, 'sg_double') })
   },
   rifle: {
     name: 'Rifle perforante', cost: 2000, cooldown: 1.0, desc: 'Una bala potente que atraviesa a todos los enemigos (cada 1 s)',
@@ -224,11 +226,12 @@ const WEAPONS = {
     upgrades: [
       { id: 'dmg_mg', name: 'Daño', kind: 'level', base: 50, max: 13, softMax: 10, text: l => `${6 + 1.5 * l} por bala`, next: l => `${6 + 1.5 * (l + 1)} por bala` },
       { id: 'mg_prob', name: 'Probabilidad explosiva', kind: 'level', base: 1500, g: 1.9, max: 4, text: l => `${2 + 2 * l}% de balas explosivas (requiere Bala explosiva)`, next: l => `${2 + 2 * (l + 1)}%` },
+      { id: 'mg_prob2', name: 'Probabilidad explosiva II', kind: 'level', base: 20000, g: 1.4, max: 10, reqLv: ['mg_prob', 4], reqTxt: 'Probabilidad explosiva al máximo', text: l => `${10 + 2 * l}% de balas explosivas (máximo 30%)`, next: l => `${10 + 2 * (l + 1)}%` },
       { id: 'mg_boom', name: 'Daño explosivo', kind: 'level', base: 1500, g: 1.6, max: 5, text: l => `+${15 * l}% de daño en las balas explosivas (máximo +75%; también sube con el daño del arma)`, next: l => `+${15 * (l + 1)}%` },
       { id: 'mg_rate', name: 'Cadencia mejorada', kind: 'once', cost: 6000, desc: 'Dispara un 45% más rápido (cada 0,055 s)' },
       { id: 'explo', name: 'Bala explosiva', kind: 'once', cost: 900, desc: 'Cada bala tiene un 2% de probabilidad de ser explosiva (explota en área)' }
     ],
-    stats: lv => ({ dmg: 6 + 1.5 * lv_(lv, 'dmg_mg'), explo: !!lv_(lv, 'explo'), boomLv: lv_(lv, 'mg_boom'), explP: 0.02 + 0.02 * lv_(lv, 'mg_prob'),
+    stats: lv => ({ dmg: 6 + 1.5 * lv_(lv, 'dmg_mg'), explo: !!lv_(lv, 'explo'), boomLv: lv_(lv, 'mg_boom'), explP: 0.02 + 0.02 * lv_(lv, 'mg_prob') + 0.02 * lv_(lv, 'mg_prob2'),
                     cooldown: lv_(lv, 'mg_rate') ? 0.055 : 0.08 })
   },
   flame: {
@@ -253,12 +256,67 @@ const WEAPONS = {
       { id: 'l_firedmg', name: 'Daño del fuego', kind: 'level', base: 2000, max: 4, text: l => `${20 + 6 * l} de daño por segundo`, next: l => `${20 + 6 * (l + 1)} por segundo` },
       { id: 'l_rate', name: 'Cadencia', kind: 'level', base: 80, max: 4, text: l => `cada ${(Math.max(0.6, 1.0 - 0.1 * l)).toFixed(1)} s`, next: l => `cada ${(Math.max(0.6, 1.0 - 0.1 * (l + 1))).toFixed(1)} s` },
       { id: 'l_radius', name: 'Radio de explosión', kind: 'level', base: 70, max: 8, text: l => `${70 + 10 * l} px`, next: l => `${70 + 10 * (l + 1)} px` },
+      { id: 'l_split', name: 'Minicohetes', kind: 'once', cost: 35000, desc: 'Tras dar al primer objetivo, el cohete suelta 3 minicohetes por detrás con el 75% de su daño' },
+      { id: 'l_dmgx', name: 'Calibre pesado', kind: 'level', base: 12000, g: 1.4, max: 8, text: l => `+${10 * l}% de daño de explosión`, next: l => `+${10 * (l + 1)}%` },
+      { id: 'l_radius2', name: 'Radio de explosión II', kind: 'level', base: 9000, g: 1.35, max: 5, reqLv: ['l_radius', 8], reqTxt: 'Radio de explosión al máximo', text: l => `+${10 * l} px de radio`, next: l => `+${10 * (l + 1)} px` },
+      { id: 'l_rate2', name: 'Recarga rápida II', kind: 'level', base: 30000, g: 1.5, max: 4, reqLv: ['l_rate', 4], reqTxt: 'Cadencia al máximo', text: l => `-${(0.05 * l).toFixed(2)} s entre disparos extra`, next: l => `-${(0.05 * (l + 1)).toFixed(2)} s` },
       { id: 'l_double', name: 'Doble explosión', kind: 'once', cost: 50000, desc: 'Cada cohete explota 2 veces (la segunda 0,35 s después, en el mismo sitio)' },
       { id: 'l_fire', name: 'Fuego en el suelo', kind: 'once', cost: 1200, desc: 'Las explosiones dejan fuego 2 s que hace daño cada segundo' }
     ],
-    stats: lv => ({ cooldown: Math.max(0.6, 1.0 - 0.1 * lv_(lv, 'l_rate')), radius: 70 + 10 * lv_(lv, 'l_radius'), fire: !!lv_(lv, 'l_fire'), ldmg: lv_(lv, 'l_dmg'), fireT: lv_(lv, 'l_firet') ? 1 : 0, fireDmg: 5 + 1.5 * lv_(lv, 'l_firedmg'), double: !!lv_(lv, 'l_double') })
+    stats: lv => ({ cooldown: Math.max(0.6, 1.0 - 0.1 * lv_(lv, 'l_rate')) - 0.05 * lv_(lv, 'l_rate2'), radius: 70 + 10 * lv_(lv, 'l_radius') + 10 * lv_(lv, 'l_radius2'), split: !!lv_(lv, 'l_split'), fire: !!lv_(lv, 'l_fire'), ldmg: lv_(lv, 'l_dmg'), fireT: lv_(lv, 'l_firet') ? 1 : 0, fireDmg: 5 + 1.5 * lv_(lv, 'l_firedmg'), double: !!lv_(lv, 'l_double') })
+  },
+  arc: {
+    name: 'Bastón de rayos', cost: 5000, cooldown: 0.45, desc: 'Rayo instantáneo que salta entre los enemigos cercanos (cada 0,45 s). Bueno contra grupos',
+    upgrades: [
+      { id: 'dmg_arc', name: 'Daño', kind: 'level', base: 45, max: 13, softMax: 10, text: l => `${16 + 3 * l} por golpe`, next: l => `${16 + 3 * (l + 1)} por golpe` },
+      { id: 'arc_chain', name: 'Saltos', kind: 'level', base: 700, g: 1.6, max: 6, text: l => `${3 + l} saltos`, next: l => `${4 + l} saltos` },
+      { id: 'arc_range', name: 'Alcance de salto', kind: 'level', base: 500, max: 5, text: l => `${170 + 30 * l} px entre enemigos`, next: l => `${200 + 30 * l} px` },
+      { id: 'arc_rate', name: 'Cadencia', kind: 'level', base: 600, max: 4, text: l => `cada ${(0.45 - 0.05 * l).toFixed(2)} s`, next: l => `cada ${(0.40 - 0.05 * l).toFixed(2)} s` },
+      { id: 'arc_stun', name: 'Parálisis larga', kind: 'once', cost: 6000, desc: 'Los enemigos golpeados (ya se paralizan 0,5 s) quedan paralizados 1 s' },
+      { id: 'arc_double', name: 'Doble rayo', kind: 'once', cost: 40000, desc: 'Cada disparo lanza 2 rayos a los 2 enemigos más cercanos a tu puntería' },
+      { id: 'arc_triple', name: 'Triple rayo', kind: 'once', cost: 120000, req: 'arc_double', desc: '3 rayos por disparo (requiere Doble rayo)' }
+    ],
+    stats: lv => ({ dmg: 16 + 3 * lv_(lv, 'dmg_arc'), chains: 3 + lv_(lv, 'arc_chain'), jump: 170 + 30 * lv_(lv, 'arc_range'), cooldown: 0.45 - 0.05 * lv_(lv, 'arc_rate'),
+                    stun: lv_(lv, 'arc_stun') ? 1 : 0.5, beams: lv_(lv, 'arc_triple') ? 3 : lv_(lv, 'arc_double') ? 2 : 1 })
+  },
+  sword: {
+    name: 'Espada', cost: 150000, cooldown: 0.7, desc: 'Tajo cuerpo a cuerpo en abanico hacia donde apuntas: golpea a todos los enemigos del arco, corta los disparos enemigos cercanos y hace muchísimo daño (cada 0,7 s)',
+    upgrades: [
+      { id: 'dmg_sword', name: 'Daño', kind: 'level', base: 200, max: 13, softMax: 10, text: l => `${Math.round((150 + 25 * l) * 1.35)} por tajo`, next: l => `${Math.round((150 + 25 * (l + 1)) * 1.35)} por tajo` },
+      { id: 'sword_double', name: 'Doble corte', kind: 'once', cost: 100000, desc: 'El ataque da dos líneas de corte paralelas a la vez (golpea dos veces)' },
+      { id: 'sword_triple', name: 'Triple corte', kind: 'once', cost: 250000, req: 'sword_double', desc: 'Tres líneas de corte paralelas a la vez (golpea tres veces) (requiere Doble corte)' },
+      { id: 'sword_void', name: 'Caos', kind: 'once', cost: 300000, desc: 'Tu ulti (R) hace un daño demencial (x4 más que el normal) a los enemigos que estén muy cerca de ti' },
+      { id: 'sword_inf', name: 'Infinito', kind: 'once', cost: 400000, desc: 'Un aura brillante pequeña te rodea y ralentiza los proyectiles enemigos muy cercanos' },
+      { id: 'sword_life', name: 'Robavidas', kind: 'once', cost: 120000, desc: 'Recuperas un 1% de tu vida máxima por cada enemigo eliminado' },
+      { id: 'sword_mol', name: 'Corte molecular', kind: 'once', cost: 200000, desc: 'Un tercer ataque (Shift cambia entre ataques): un corte mucho más grande que tarda mucho en repetirse y hace el doble de daño' },
+      { id: 'sword_rb', name: 'Filo arcoíris', kind: 'level', base: 150000, g: 2, max: 3, text: l => ['sin efectos', 'tras usar R: 30 s de efectos', 'tras usar R: 60 s de efectos', 'efectos permanentes'][l], next: l => ['tras usar R: 30 s de efectos', 'tras usar R: 60 s', 'efectos permanentes'][l] },
+      { id: 'sword_refl', name: 'Reflejos', kind: 'once', cost: 180000, desc: 'Los proyectiles pequeños y de poco daño que cortas rebotan contra los enemigos en vez de desaparecer' },
+      { id: 'sword_range', name: 'Corte a distancia', kind: 'once', cost: 150000, desc: 'Shift cambia de ataque: los ataques son más lentos (x1,6) y hacen el 75% del daño, pero cada corte sale despedido hacia delante y atraviesa enemigos' }
+    ],
+    stats: lv => ({ dmg: (150 + 25 * lv_(lv, 'dmg_sword')) * 1.35, range: 150, arc: 2.1, cuts: lv_(lv, 'sword_triple') ? 3 : lv_(lv, 'sword_double') ? 2 : 1, ranged: !!lv_(lv, 'sword_range'), vacio: !!lv_(lv, 'sword_void'), mol: !!lv_(lv, 'sword_mol'), refl: !!lv_(lv, 'sword_refl') })
+  },
+  saw: {
+    name: 'Sierra boomerang', cost: 4500, cooldown: 0.9, desc: 'Un disco que sale, atraviesa a los enemigos, vuelve enseguida tras chocar con uno (o con una pared) y golpea también al regresar (cada 0,9 s)',
+    upgrades: [
+      { id: 'dmg_saw', name: 'Daño', kind: 'level', base: 40, max: 13, softMax: 10, text: l => `${Math.round((24 + 4 * l) * 0.6)} por golpe`, next: l => `${Math.round((24 + 4 * (l + 1)) * 0.6)} por golpe` },
+      { id: 'saw_count', name: 'Discos', kind: 'level', base: 1500, g: 2.2, max: 3, text: l => `${1 + l} discos por disparo`, next: l => `${2 + l} discos` },
+      { id: 'saw_size', name: 'Tamaño del disco', kind: 'level', base: 500, max: 5, text: l => `radio ${14 + 3 * l} px`, next: l => `radio ${17 + 3 * l} px` },
+      { id: 'saw_range', name: 'Alcance', kind: 'level', base: 450, max: 5, text: l => `${Math.round(650 * (0.5 + 0.08 * l))} px de ida`, next: l => `${Math.round(650 * (0.58 + 0.08 * l))} px` },
+      { id: 'saw_rate', name: 'Cadencia', kind: 'level', base: 700, max: 4, text: l => `cada ${(0.9 - 0.1 * l).toFixed(1)} s`, next: l => `cada ${(0.8 - 0.1 * l).toFixed(1)} s` },
+      { id: 'saw_edge', name: 'Filo de regreso', kind: 'once', cost: 9000, desc: 'El disco hace un 50% más de daño en el camino de vuelta' },
+      { id: 'saw_big', name: 'Sierra gigante', kind: 'once', cost: 100000, req: 'saw_edge', desc: 'Los discos son 1,6 veces más grandes y hacen un 40% más de daño (requiere Filo de regreso)' }
+    ],
+    stats: lv => ({ dmg: (24 + 4 * lv_(lv, 'dmg_saw')) * 0.6 * (lv_(lv, 'saw_big') ? 1.4 : 1), count: 1 + lv_(lv, 'saw_count'), r: (14 + 3 * lv_(lv, 'saw_size')) * (lv_(lv, 'saw_big') ? 1.6 : 1),
+                    out: 0.5 + 0.08 * lv_(lv, 'saw_range'), cooldown: 0.9 - 0.1 * lv_(lv, 'saw_rate'), edge: !!lv_(lv, 'saw_edge') })
   }
 };
+
+// Mejoras caras por arma: Maestría (daño) y Ritmo (cadencia), poco a poco
+for (const id in WEAPONS) {
+  WEAPONS[id].upgrades.push(
+    { id: 'mast_' + id, name: 'Maestría', kind: 'level', base: 25000, g: 1.4, max: 10, text: l => `+${(id === 'saw' ? 4.8 : 8) * l}% de daño con esta arma`, next: l => `+${(id === 'saw' ? 4.8 : 8) * (l + 1)}%` },
+    { id: 'tempo_' + id, name: 'Ritmo', kind: 'level', base: 40000, g: 1.4, max: 8, text: l => `+${6 * l}% de cadencia con esta arma`, next: l => `+${6 * (l + 1)}%` });
+}
 
 // Probabilidad de crítico: 1% al empezar; 10 mejoras con subidas de +0,5% que crecen un poco hasta llegar al 8%
 function critPct(l) { return 1 + 0.5 * l + l * (l - 1) / 2 * (2 / 45); }
@@ -270,12 +328,21 @@ const GENERAL = [
   { id: 'crit_p', name: 'Probabilidad de crítico', kind: 'level', base: 1000, max: 10, text: l => `${critPct(l).toFixed(1)}%`, next: l => `${critPct(l + 1).toFixed(1)}%` },
   { id: 'crit_m', name: 'Multiplicador de crítico', kind: 'level', base: 800, max: 10, text: l => `x${(1.3 + 0.17 * l).toFixed(2)}`, next: l => `x${(1.3 + 0.17 * (l + 1)).toFixed(2)}` },
   { id: 'loot',   name: 'Botín',            kind: 'level', base: 500, max: 10, text: l => `+${6 * l}% de monedas recogidas`, next: l => `+${6 * (l + 1)}%` },
-  { id: 'mag', name: 'Imán de monedas', kind: 'level', base: 15, max: 10, text: l => `radio ${110 + 25 * l}`, next: l => `radio ${110 + 25 * (l + 1)}` }
+  { id: 'mag', name: 'Imán de monedas', kind: 'level', base: 15, max: 10, text: l => `radio ${110 + 25 * l}`, next: l => `radio ${110 + 25 * (l + 1)}` },
+  // ---- mejoras caras que, juntas, vuelven al jugador muy fuerte ----
+  { id: 'hp_big', name: 'Vida colosal', kind: 'level', base: 150000, g: 1.55, max: 6, reqLv: ['hp', 20], reqTxt: 'Vida máxima al nv. 20', text: l => `+${250 * l} de vida máxima`, next: l => `+${250 * (l + 1)}` },
+  { id: 'gdmg', name: 'Potencia', kind: 'level', base: 15000, g: 1.3, max: 15, text: l => `+${4 * l}% de daño con todas las armas`, next: l => `+${4 * (l + 1)}%` },
+  { id: 'grate', name: 'Cadencia general', kind: 'level', base: 20000, g: 1.3, max: 10, text: l => `+${4 * l}% de cadencia con todas las armas`, next: l => `+${4 * (l + 1)}%` },
+  { id: 'crit_p2', name: 'Crítico II: probabilidad', kind: 'level', base: 30000, g: 1.35, max: 10, reqLv: ['crit_p', 10], reqTxt: 'Probabilidad de crítico al máximo', text: l => `+${l}% de probabilidad`, next: l => `+${l + 1}%` },
+  { id: 'crit_m2', name: 'Crítico II: multiplicador', kind: 'level', base: 30000, g: 1.35, max: 10, reqLv: ['crit_m', 10], reqTxt: 'Multiplicador de crítico al máximo', text: l => `+${(0.1 * l).toFixed(1)} al multiplicador`, next: l => `+${(0.1 * (l + 1)).toFixed(1)}` },
+  { id: 'spd2', name: 'Velocidad II', kind: 'level', base: 12000, g: 1.3, max: 8, reqLv: ['spd', 10], reqTxt: 'Velocidad al máximo', text: l => `+${10 * l} px/s`, next: l => `+${10 * (l + 1)} px/s` },
+  { id: 'loot2', name: 'Botín II', kind: 'level', base: 15000, g: 1.3, max: 10, reqLv: ['loot', 10], reqTxt: 'Botín al máximo', text: l => `+${5 * l}% de monedas recogidas`, next: l => `+${5 * (l + 1)}%` },
+  { id: 'mag2', name: 'Imán II', kind: 'level', base: 6000, g: 1.3, max: 5, reqLv: ['mag', 10], reqTxt: 'Imán al máximo', text: l => `+${40 * l} de radio`, next: l => `+${40 * (l + 1)}` }
 ];
 const PASSIVES = [
   { id: 'iframes', name: 'Reflejos',         kind: 'level', base: 550, max: 4,  text: l => `+${(0.05 * l).toFixed(2)} s de invulnerabilidad tras un golpe`, next: l => `+${(0.05 * (l + 1)).toFixed(2)} s` },
   { id: 'regen', name: 'Regeneración',         kind: 'level', base: 60, max: 10, text: l => `${(0.5 * l).toFixed(1)} HP por segundo`,            next: l => `${(0.5 * (l + 1)).toFixed(1)} HP/s` },
-  { id: 'armor', name: 'Armadura',             kind: 'level', base: 70, max: 10, text: l => `-${3 * l}% de daño recibido`,                       next: l => `-${3 * (l + 1)}%` },
+  { id: 'armor', name: 'Armadura',             kind: 'level', base: 70, g: 1.32, softMax: 10, max: 15, text: l => `-${3 * l}% de daño recibido`,                       next: l => `-${3 * (l + 1)}%` },
   { id: 'cdr',   name: 'Recarga de poderes',   kind: 'level', base: 90, max: 10, text: l => `-${2 * l} s de espera de cada poder (mínimo 25% de la espera base)`, next: l => `-${2 * (l + 1)} s` }
 ];
 function costOf(u, l) { return Math.round(u.base * Math.pow(u.g || 1.45, l) * (u.softMax && l >= u.softMax ? 2.5 : 1)); }
@@ -286,7 +353,7 @@ const POWERS = [
   { id: 'p_dmg',   key: '2', name: 'Furia',      cost: 700, cd: 30, dur: 5,    desc: 'Duplica tu daño durante 5 s (espera tras acabar el efecto: 30 s)' },
   { id: 'p_def',   key: '3', name: 'Coraza',     cost: 600, cd: 30, dur: 4,    desc: 'Recibes la mitad de daño durante 4 s (espera tras acabar el efecto: 30 s)' },
   { id: 'p_pulse', key: '4', name: 'Pulso',      cost: 800, cd: 25, dur: 0,    desc: 'Onda de choque: daña (40), empuja a los enemigos cercanos y borra las balas enemigas (espera tras acabar el efecto: 25 s)' },
-  { id: 'p_dash',  key: '5', name: 'Aceleración', cost: 500, cd: 30, dur: 5,   desc: 'Duplica tu velocidad de movimiento durante 5 s (espera tras acabar el efecto: 30 s)' },
+  { id: 'p_dash',  key: '5', name: 'Explosión',  cost: 500, cd: 60, dur: 0,   desc: 'Gran explosión (radio 450) que atraviesa enemigos, escudos y paredes: daña (350) a todos los enemigos a tu alrededor (espera tras acabar el efecto: 60 s)' },
   { id: 'p_slow',  key: '6', name: 'Ralentizar', cost: 900, cd: 45, dur: 5,    desc: 'Los enemigos se mueven y atacan a la mitad de velocidad durante 5 s (espera tras acabar el efecto: 45 s)' },
   { id: 'p_mag',   key: '7', name: 'Cosecha',    cost: 400, cd: 40, dur: 3,    desc: 'Atrae todas las monedas del mapa hacia ti durante 3 s (espera tras acabar el efecto: 40 s)' },
   { id: 'p_heal',  key: '8', name: 'Botiquín',   cost: 700, cd: 60, dur: 0,    desc: 'Cura el 40% de tu vida máxima al instante (espera tras acabar el efecto: 60 s)' },
@@ -431,6 +498,7 @@ function saveProg(mapId, stage) {
 function getStartStage(mapId) {
   let s = 0;
   try { s = (JSON.parse(localStorage.getItem('circuloArenaStart')) || {})[mapId] || 0; } catch (e) {}
+  if (s === 3) s = 2;   // el inicio en el Mecha Titán ya no existe
   return Math.min(s, 4, getProg()[mapId] || 0);
 }
 function setStartStage(mapId, s) {
@@ -478,29 +546,55 @@ function saveBadge(mapId, time) {
     }
   }
   if (lv.r_quint) { setTotal(getTotal() + 300000); delete lv.r_quint; changed = true; }   // mejora retirada: se devuelven las monedas
+  if (lv.armor > 15) {   // la armadura ahora llega al 45 %: se devuelven las monedas de los niveles sobrantes
+    let refund = 0;
+    for (let i = 15; i < lv.armor; i++) refund += Math.round(70 * Math.pow(1.32, i) * (i >= 10 ? 2.5 : 1));
+    setTotal(getTotal() + refund); lv.armor = 15; changed = true;
+  }
   if (lv.l_dmg2) { setTotal(getTotal() + 4000); delete lv.l_dmg2; changed = true; }   // mejora retirada: se devuelven las monedas
   const CAPS = { iframes: 4, f_range: 7, f_width: 5, f_cool: 5, f_vent: 5, l_rate: 4 };
   for (const k in CAPS) if (lv[k] > CAPS[k]) { lv[k] = CAPS[k]; changed = true; }
   if (changed) setLevels(lv);
 })();
 
+// ============ MODIFICADORES (se activan y desactivan en su pestaña) ============
+// Efectos: hp/dmg/speed/rate/gen/dup = enemigos; bhp/bdmg/brate/bgen = jefes. Si varios modificadores cambian lo mismo, se aplica el mayor (no se acumulan).
+const MODS = [
+  { id: 'hp2',        name: 'Doble de vida',           desc: 'Los enemigos tienen el doble de vida (los jefes no).', eff: { hp: 2 } },
+  { id: 'rate2',      name: 'Doble cadencia de ataque', desc: 'Los enemigos atacan el doble de rápido.', eff: { rate: 2 } },
+  { id: 'hard',       name: 'Modo difícil',            desc: 'Enemigos con x1,5 de daño, velocidad y velocidad de ataque. Los jefes tienen x3 de vida.', eff: { dmg: 1.5, speed: 1.5, rate: 1.5, bhp: 3 } },
+  { id: 'infernal',   name: 'Jefes infernales',        desc: 'Los jefes tienen el doble de vida, atacan el doble de rápido y generan enemigos x1,5 más rápido.', eff: { bhp: 2, brate: 2, bgen: 1.5 } },
+  { id: 'fragile',    name: 'Frágil',                  desc: 'No tienes armadura y tu vida máxima es 200.', eff: { fragile: 1 } },
+  { id: 'impossible', name: 'Modo imposible',          desc: 'Enemigos: doble de vida, x1,5 de daño, x2 de velocidad de ataque y x2 de generación de enemigos y de duplicación de sí mismos. Jefes: x5 de vida, x2 de daño y x2 de generación de enemigos.', eff: { hp: 2, dmg: 1.5, rate: 2, gen: 2, dup: 2, bhp: 5, bdmg: 2, bgen: 2 } }
+];
+function getModsOn() { try { return JSON.parse(localStorage.getItem('circuloArenaMods')) || {}; } catch (e) { return {}; } }
+function setModsOn(o) { try { localStorage.setItem('circuloArenaMods', JSON.stringify(o)); } catch (e) {} }
+function modStats() {
+  const m = { hp: 1, dmg: 1, speed: 1, rate: 1, gen: 1, dup: 1, bhp: 1, bdmg: 1, brate: 1, bgen: 1, fragile: false }, on = getModsOn();
+  for (const d of MODS) if (on[d.id]) for (const k in d.eff) { if (k === 'fragile') m.fragile = true; else m[k] = Math.max(m[k], d.eff[k]); }   // se queda el mayor
+  return m;
+}
+const isBossT = t => t === 'final' || t === 'final2' || t === 'final3' || t === 'final4';
+let curBossSrc = false;   // el daño que se está aplicando viene de un jefe
+
 function computeStats() {
   const lv = getActiveLevels();
   return {
     lv,
-    maxHp: 100 + 20 * lv_(lv, 'hp'),
-    speed: 230 + 15 * lv_(lv, 'spd'),
-    magnet: 110 + 25 * lv_(lv, 'mag'),
+    maxHp: 100 + 20 * lv_(lv, 'hp') + 250 * lv_(lv, 'hp_big'),
+    speed: 230 + 15 * lv_(lv, 'spd') + 10 * lv_(lv, 'spd2'),
+    magnet: 110 + 25 * lv_(lv, 'mag') + 40 * lv_(lv, 'mag2'),
     regen: 0.5 * lv_(lv, 'regen'),        // HP por segundo
     armor: 0.03 * lv_(lv, 'armor'),       // reducción del daño recibido
     cdr: 2 * lv_(lv, 'cdr'),              // segundos que se restan a la espera de cada poder
-    critP: critPct(lv_(lv, 'crit_p')) / 100,
-    critM: 1.3 + 0.17 * lv_(lv, 'crit_m'),
-    loot: 1 + 0.06 * lv_(lv, 'loot'),
+    critP: critPct(lv_(lv, 'crit_p')) / 100 + 0.01 * lv_(lv, 'crit_p2'),
+    critM: 1.3 + 0.17 * lv_(lv, 'crit_m') + 0.1 * lv_(lv, 'crit_m2'),
+    loot: 1 + 0.06 * lv_(lv, 'loot') + 0.05 * lv_(lv, 'loot2'),
     invuln: 0.05 * lv_(lv, 'iframes'),
     weapon: getWeapon()
   };
 }
+(function () { const cs = computeStats; computeStats = function () { const st = cs(); if (modStats().fragile) { st.maxHp = 200; st.armor = 0; } return st; }; })();
 
 // ============ SONIDO (sintetizado, sin archivos) ============
 const SND = { ctx: null, last: {} };
@@ -552,6 +646,9 @@ const SOUNDS = {
   rifle:     () => { tone(1000, 0.25, { type: 'sawtooth', to: 60, vol: 0.22 }); noise(0.12, { freq: 3000, vol: 0.2 }); },
   mg:        () => tone(520, 0.05, { type: 'square', to: 260, vol: 0.09 }),
   flame:     () => noise(0.09, { freq: 1200, vol: 0.18 }),
+  arc:       () => { noise(0.1, { freq: 4000, vol: 0.18 }); tone(1500, 0.1, { type: 'sawtooth', to: 300, vol: 0.14 }); },
+  sword:     () => { noise(0.12, { freq: 2500, vol: 0.2 }); tone(700, 0.12, { type: 'triangle', to: 250, vol: 0.18 }); },
+  saw:       () => tone(420, 0.2, { type: 'triangle', to: 780, vol: 0.14 }),
   launcher:  () => { tone(260, 0.25, { type: 'sawtooth', to: 90, vol: 0.2 }); noise(0.18, { freq: 1500, vol: 0.2 }); },
   boom:      () => { noise(0.35, { freq: 700, vol: 0.4 }); tone(90, 0.3, { type: 'sine', to: 40, vol: 0.35 }); },
   block:     () => { tone(1400, 0.06, { type: 'triangle', vol: 0.1 }); tone(900, 0.08, { type: 'triangle', vol: 0.08, delay: 0.03 }); },
@@ -632,6 +729,7 @@ addEventListener('keydown', e => {
     if (!e.repeat) {
       if (k === 'q') cycleWeapon(-1);              // arma anterior
       else if (k === 'e') cycleWeapon(1);          // arma siguiente
+      else if (k === 'shift' && stats.weapon === 'sword') { const n = swModes(WEAPONS.sword.stats(stats.lv)).length; state.swMode = ((state.swMode || 0) + 1) % n; }   // cambia el ataque de la espada
       else if (k === 'r' || k === 'f' || k === ' ') useUlt();   // ulti del arma (R, F o Espacio: así no hace falta R si el teclado no registra tantas teclas)
       else { const p = POWERS.find(p => p.key === e.key); if (p) usePower(p); }
     }
@@ -650,6 +748,13 @@ document.addEventListener('visibilitychange', () => { for (const k in keys) keys
 addEventListener('blur', () => { for (const k in keys) keys[k] = false; mouse.down = false; });
 
 document.getElementById('again').onclick = () => start();
+document.getElementById('infinite').onclick = () => {   // tras derrotar al último jefe: seguir jugando mientras los enemigos se hacen más fuertes
+  if (!state || !state.won || state.inf) return;
+  state.over = false; state.won = false; state.victory = false;
+  state.inf = { t: 0, steps: 0, m: 1 }; state.infBase = { coins: state.coins, kills: state.kills, time: state.time };
+  document.getElementById('over').style.display = 'none'; document.getElementById('infinite').style.display = 'none';
+  state.banner = { text: 'MODO INFINITO: LOS ENEMIGOS GANAN VIDA CON EL TIEMPO', t: 4 };
+};
 document.getElementById('play').onclick = () => start();
 document.getElementById('toMenu').onclick = () => showMenu();
 document.getElementById('resume').onclick = () => togglePause();
@@ -670,6 +775,7 @@ function start() {
             heat: 0, locked: false, bossSpawned: false, banner: null, victory: false, won: false,
             diff: DIFFS[MAPS[currentMap].diff], pw: {}, ult: ULT_CD, ultTotal: ULT_CD, ultHalf: false, buffSpd: 0, buffRate: 0, buffMg: 0, buffDef: 0, ultShots: null, dashT: 0, dashDir: { x: 1, y: 0 } };
   for (const p of POWERS) state.pw[p.id] = { cd: 0, t: 0, total: 1 };
+  state.mods = modStats();
   state.startStage = getStartStage(currentMap); state.startTime = 0;
   if (state.startStage >= 1) {   // empezar directamente en la fase siguiente al jefe superado
     state.bossSpawned = true; state.phase2 = true; state.time = 300; state.spawnTimer = 3;
@@ -677,7 +783,7 @@ function start() {
     if (state.startStage >= 3) state.time = 900;   // el Mecha Titán sale enseguida
     if (state.startStage >= 4) { state.boss3Spawned = true; state.phase4 = true; }
     state.startTime = state.time;
-    state.banner = { text: state.startStage >= 4 ? 'RONDA ARCOÍRIS: SOBREVIVE HASTA LOS 18:00' : state.startStage >= 3 ? 'EL MECHA TITÁN SE ACERCA' : state.startStage >= 2 ? 'RONDA ROBOT: SOBREVIVE HASTA LOS 15:00' : 'FASE DE FANTASMAS: SOBREVIVE HASTA LOS 10:00', t: 3 };
+    state.banner = { text: state.startStage >= 4 ? 'RONDA ARCOÍRIS: SOBREVIVE HASTA LOS 20:00' : state.startStage >= 3 ? 'EL MECHA TITÁN SE ACERCA' : state.startStage >= 2 ? 'RONDA ROBOT: SOBREVIVE HASTA LOS 15:00' : 'FASE DE FANTASMAS: SOBREVIVE HASTA LOS 10:00', t: 3 };
   }
   player = { x: WW / 2, y: WH / 2, hp: stats.maxHp, cd: 0, cdMax: 0.2, invuln: 0 };
   enemies = []; bullets = []; ebullets = []; bombs = []; fires = []; fx = []; coins = []; particles = [];
@@ -765,11 +871,13 @@ function withToggle(btn, id) {
 function renderUpgrade(shop, u, locked, total) {
   const l = lvl(u.id);
   if (u.req && !lvl(u.req)) locked = true;
+  const needTxt = u.reqLv && lvl(u.reqLv[0]) < u.reqLv[1] ? ' · Requiere: ' + u.reqTxt : '';
+  if (needTxt) locked = true;
   if (u.kind === 'level') {
     const maxed = l >= u.max, cost = costOf(u, l);
     const label = locked ? 'Bloqueada' : maxed ? 'Máximo' : `Comprar ● ${cost}`;
     const btn = mkBtn(label, locked || maxed || total < cost, () => buy(u.id, cost, l + 1));
-    addRow(shop, `${u.name} (nv. ${l}/${u.max})${l && isOff(u.id) ? ' · DESACTIVADA' : ''}`, `Ahora: ${u.text(l)}${maxed ? '' : ' → ' + u.next(l)}`, l ? withToggle(btn, u.id) : btn);
+    addRow(shop, `${u.name} (nv. ${l}/${u.max})${l && isOff(u.id) ? ' · DESACTIVADA' : ''}`, `Ahora: ${u.text(l)}${maxed ? '' : ' → ' + u.next(l)}${needTxt}`, l ? withToggle(btn, u.id) : btn);
   } else {
     const owned = !!l;
     const label = owned ? 'Comprado' : locked ? 'Bloqueada' : `Comprar ● ${u.cost}`;
@@ -787,7 +895,7 @@ const ENEMY_LEVELS = [
   { name: 'Nivel 5 · Robots básicos (10:00 – 11:00)', ids: ['robBrown', 'robCeleste', 'robRed', 'robOrange', 'robDrone'] },
   { name: 'Nivel 6 · Robots medios (10:00 – 12:00)', ids: ['robPink', 'robYellow', 'robNavy', 'robLime', 'robBlack', 'robTank'] },
   { name: 'Nivel 7 · Robots avanzados (12:00 – 15:00)', ids: ['robSword', 'robViolet', 'robGray', 'robWhite', 'robAngel', 'robPurple', 'robGold', 'final3'] },
-  { name: 'Nivel 8 · Ronda arcoíris (15:00 – 18:00)', ids: ['rbCircle', 'rbTri', 'rbArrow', 'rbRhomb', 'rbOct', 'rbMoon', 'rbSq', 'rbDrop', 'rbPent', 'rbBolt', 'rbStar4', 'rbHex', 'rbSpiral', 'rbCross', 'rbStar5', 'rbStar8', 'final4'] }
+  { name: 'Nivel 8 · Ronda arcoíris (15:00 – 20:00)', ids: ['rbCircle', 'rbTri', 'rbArrow', 'rbRhomb', 'rbOct', 'rbMoon', 'rbSq', 'rbDrop', 'rbPent', 'rbBolt', 'rbStar4', 'rbHex', 'rbSpiral', 'rbCross', 'rbStar5', 'rbStar8', 'final4'] }
 ];
 // Qué generan otros enemigos (al vivir o al morir), para la pestaña Pruebas
 const GENERA = {
@@ -796,15 +904,15 @@ const GENERA = {
   ghostGreen: 'al morir: onda que cura a los aliados', ghostR: 'al morir: explosión', final: 'en vida: Esquirlas', final2: 'en vida: fantasmas morados, verdes y grises',
   robBrown: 'al morir: explosión con aviso de 0,75 s', robLime: 'en vida: cura; al morir: onda curativa', robPurple: 'en vida: 10 marrones; con daño 3 celestes + 2 amarillos; a media vida 3 rosas + 1 celeste + 2 rojos; al morir: 2 blancos + 2 negros',
   robGold: 'en vida: 2 amarillos cada 5 s', robWhite: 'al morir: un Ángel blanco', robGray: 'al morir: 3 drones', robRed: 'explota al final de cada estampida', robPink: 'lanza morteros', robBlack: 'al morir: explota y suelta 2 grises',
-  rbOct: 'al morir: 2 octógonos medianos (y así 3 veces)', rbPent: 'al morir: 3 pentágonos medianos', rbPent1: 'al morir: 3 pentágonos pequeños', rbOct1: 'al morir: 2 octógonos pequeños', rbOct2: 'al morir: 2 octógonos diminutos', rbDrop: 'al morir: charco de daño',
-  rbBolt: 'al morir: acelera 1 s a los enemigos cercanos', rbStar4: 'en vida: explosiones curativas; al morir: cura a todos', rbStar8: 'en vida: una copia suya cada 10 s',
+  rbOct: 'al morir: 2 octógonos medianos (y así 3 veces); si no lo matas en 7 s pasa a la fase anterior (pequeño → mediano → grande → gigante)', rbOctG: 'al morir: 2 octógonos grandes', rbPent: 'al morir: 3 pentágonos medianos', rbPent1: 'al morir: 3 pentágonos pequeños', rbOct1: 'al morir: 2 octógonos pequeños', rbOct2: 'al morir: 2 octógonos diminutos', rbDrop: 'al morir: charco de daño',
+  rbBolt: 'al morir: acelera 1 s a los enemigos cercanos', rbStar4: 'en vida: explosiones curativas; al morir: cura a todos', rbStar8: 'en vida: una copia suya cada 6 s',
   final4: 'en vida: oleadas de figuras arcoíris por fase (triángulos y círculos → flechas, rombos y medialunas → estrellas 8, cruces y octógono → hexágonos, estrella 4, espirales, gotas y rayos)', final3: 'en vida: oleadas por fase (amarillos, marrones, celestes, rojos, naranja, tanques, azul oscuro, grises, blancos, dorados, negros)'
 };
 const APPEAR = { tri: 0, fast: 20, bomb: 30, shoot: 40, sq: 60, dash: 75, split: 90, shield: 100, heal: 120, dup: 120, summon: 150, sniper: 150, boss: 150,
   ghost: 200, ghostB: 220, ghostY: 240, ghostR: 275, final: 300, ghostBlue: 310, ghostPurple: 360, ghostGray: 410, ghostOrange: 460, ghostGreen: 520, final2: 600,
   robBrown: 600, robPink: 600, robTank: 600, robCeleste: 600, robRed: 610, robOrange: 620, robYellow: 640, robNavy: 660, robLime: 680, robBlack: 700,
-  robSword: 720, robViolet: 740, robGray: 760, robWhite: 780, robPurple: 810, robGold: 840, final3: 900, rbCircle: 900, rbTri: 910, rbArrow: 920, rbRhomb: 930, rbOct: 940, rbMoon: 950, rbSq: 960, rbDrop: 960, rbPent: 970, rbBolt: 980, rbStar4: 990, rbHex: 1000, rbSpiral: 1000, rbCross: 1010, rbStar5: 1020, rbStar8: 1040, final4: 1080 };
-const TABS = [['weapons', 'Armas'], ['upgrades', 'Mejoras'], ['powers', 'Poderes'], ['maps', 'Mapas'], ['practice', 'Pruebas'], ['stats', 'Estadísticas'], ['settings', 'Ajustes']];
+  robSword: 720, robViolet: 740, robGray: 760, robWhite: 780, robPurple: 810, robGold: 840, final3: 900, rbCircle: 900, rbTri: 910, rbArrow: 920, rbRhomb: 930, rbOct: 940, rbMoon: 950, rbSq: 960, rbDrop: 960, rbPent: 970, rbBolt: 980, rbStar4: 990, rbHex: 1000, rbSpiral: 1000, rbCross: 1010, rbStar5: 1020, rbStar8: 1040, final4: 1200 };
+const TABS = [['weapons', 'Armas'], ['upgrades', 'Mejoras'], ['powers', 'Poderes'], ['maps', 'Mapas'], ['practice', 'Pruebas'], ['mods', 'Modificadores'], ['stats', 'Estadísticas'], ['settings', 'Ajustes']];
 function renderTabs() {
   const el = document.getElementById('tabs');
   el.innerHTML = '';
@@ -816,6 +924,7 @@ function fmtLong(t) {
   return h ? `${h} h ${m} min` : `${m} min ${s} s`;
 }
 
+let resetArmedUntil = 0;
 function renderSettings(container, inMenu) {
   container.innerHTML = '';
   const row = document.createElement('div');
@@ -846,8 +955,30 @@ function renderSettings(container, inMenu) {
     container.insertAdjacentHTML('beforeend', '<h2>Trucos</h2>');
     addRow(container, 'Dame 10.000 de oro', 'Suma 10.000 monedas a tu total', mkBtn('+10k', false, () => { setTotal(getTotal() + 10000); sfx('buy'); if (inMenu) renderShop(); }, 'sec'));
     addRow(container, 'Dame 1.000.000 de oro', 'Suma 1.000.000 de monedas a tu total', mkBtn('+1M', false, () => { setTotal(getTotal() + 1000000); sfx('buy'); if (inMenu) renderShop(); }, 'sec'));
-    addRow(container, 'Dame todas las armas', 'Desbloquea las 6 armas (no toca el resto de mejoras)', mkBtn('Todas', false, () => {
+    addRow(container, 'Dame todas las armas', 'Desbloquea todas las armas (no toca el resto de mejoras)', mkBtn('Todas', false, () => {
       const lv = getLevels(); for (const id in WEAPONS) if (id !== 'pistol') lv[id] = 1;
+      setLevels(lv); sfx('buy'); if (inMenu) renderShop();
+    }, 'sec'));
+    if (inMenu) {
+      const armed = Date.now() < resetArmedUntil;
+      addRow(container, 'Reiniciar progreso', 'Borra monedas, armas, mejoras, poderes, insignias, récords y fases desbloqueadas. No se puede deshacer', mkBtn(armed ? '¿Seguro? Pulsa otra vez' : 'Reiniciar', false, () => {
+        if (Date.now() < resetArmedUntil) {
+          const del = [];
+          for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k && k.startsWith('circuloArena') && !['circuloArenaVol', 'circuloArenaMute', 'circuloArenaKeyDbg'].includes(k)) del.push(k); }
+          for (const k of del) localStorage.removeItem(k);
+          location.reload();
+        } else {
+          resetArmedUntil = Date.now() + 4000; renderSettings(container, inMenu);
+          setTimeout(() => { if (Date.now() >= resetArmedUntil) renderSettings(container, inMenu); }, 4100);
+        }
+      }, armed ? '' : 'sec'));
+    }
+    addRow(container, 'Desbloquea todo', 'Compra al máximo todas las armas, mejoras y poderes (no toca tus monedas)', mkBtn('Todo', false, () => {
+      const lv = getLevels();
+      const all = [...GENERAL, ...PASSIVES]; for (const id in WEAPONS) all.push(...WEAPONS[id].upgrades);
+      for (const u of all) lv[u.id] = u.kind === 'level' ? u.max : 1;
+      for (const id in WEAPONS) if (id !== 'pistol') lv[id] = 1;
+      for (const pw of POWERS) lv[pw.id] = 1;
       setLevels(lv); sfx('buy'); if (inMenu) renderShop();
     }, 'sec'));
   }
@@ -894,6 +1025,7 @@ function renderShop() {
     shop.insertAdjacentHTML('beforeend', `<h2>Empezar en… (${MAPS[m].name})</h2>`);
     const prog = getProg()[m] || 0, cur2 = getStartStage(m);
     STAGES.forEach((st, i) => {
+      if (i === 3) return;   // sin inicio en el Mecha Titán
       const unlocked = prog >= i;
       const b = mkBtn(cur2 === i ? 'Elegido' : unlocked ? 'Elegir' : 'Bloqueado', cur2 === i || !unlocked, () => { setStartStage(m, i); renderShop(); }, cur2 === i ? 'on' : 'sec');
       addRow(shop, st.name, unlocked ? (i ? 'Empiezas directamente en esta fase' : 'La partida normal') : st.need, b);
@@ -923,6 +1055,10 @@ function renderShop() {
         addRow(shop, dot(k, d) + d.name + (boss ? '  ★ JEFE' : ''), info, mkBtn('Probar', false, () => startPractice(k), boss ? '' : 'sec'));
       }
     }
+  } else if (shopTab === 'mods') {
+    shop.insertAdjacentHTML('beforeend', '<h2>Modificadores</h2><p style="opacity:.75;margin:4px 0 10px">Actívalos o desactívalos a tu gusto. Si varios cambian la misma cosa (por ejemplo x2 y x1,5 de daño) se aplica el mayor: no se acumulan. Se aplican al empezar la partida.</p>');
+    const on = getModsOn();
+    for (const d of MODS) addRow(shop, d.name, d.desc, mkBtn(on[d.id] ? 'Activado' : 'Desactivado', false, () => { const o = getModsOn(); o[d.id] = !o[d.id]; setModsOn(o); renderShop(); }, on[d.id] ? '' : 'sec'));
   } else if (shopTab === 'stats') {
     const r = getRecords();
     shop.insertAdjacentHTML('beforeend', '<h2>Récords</h2>');
@@ -972,7 +1108,7 @@ function finishRun() {
   bankCoins();
   return recordRun();
 }
-addEventListener('pagehide', () => { if (!inMenu && state && !state.over) bankCoins(); });
+addEventListener('pagehide', () => { if (!inMenu && state && !state.over) { if (state.inf) finishInf(); else bankCoins(); } });
 
 // ============ DIFICULTAD ============
 function pickType(t) {
@@ -1007,7 +1143,7 @@ function pickType(t) {
   for (const k in RS) w[k] = state.phase3 && t >= RS[k][1] ? RS[k][0] : 0;
   // ronda arcoíris: [peso, segundo en que empieza a salir]
   const RB = { rbCircle: [3, 900], rbTri: [2, 910], rbArrow: [1.5, 920], rbRhomb: [1.5, 930], rbOct: [1.5, 940], rbMoon: [1.5, 950], rbSq: [0.6, 960], rbDrop: [1.5, 960],
-               rbPent: [1, 970], rbBolt: [1, 980], rbStar4: [1, 990], rbHex: [1, 1000], rbSpiral: [1, 1000], rbCross: [1, 1010], rbStar5: [1, 1020], rbStar8: [0.8, 1040] };
+               rbPent: [1, 970], rbBolt: [1, 980], rbStar4: [1, 990], rbHex: [1, 1000], rbSpiral: [1, 1000], rbCross: [1, 1010], rbStar5: [1, 1020], rbStar8: [1.3, 1040] };
   for (const k in RB) w[k] = state.phase4 && t >= RB[k][1] ? RB[k][0] : 0;
   if (state.phase4) { for (const k in w) if (!CFG.enemies[k].rb) w[k] = 0; }
   else if (state.phase3) { for (const k in w) if (!CFG.enemies[k].robot) w[k] = 0; }          // ronda final: solo robots
@@ -1020,7 +1156,7 @@ function pickType(t) {
 function makeEnemy(type, x, y) {
   const def = CFG.enemies[type];
   const mult = def.noScale ? 1 : 1 + CFG.hpGrowthPerMin * Math.floor(state.time / 60);
-  const hp = def.hp * mult * state.diff.hp;
+  const hp = def.hp * mult * state.diff.hp * (isBossT(type) ? state.mods.bhp : state.mods.hp) * (state.inf ? state.inf.m : 1);
   return {
     type, x, y, hp, maxHp: hp, angle: 0, entered: false,
     shootT: 1 + Math.random(),
@@ -1143,6 +1279,7 @@ function aimVec() {
   return { x: dx / l, y: dy / l };
 }
 
+function discReturn(b) { if (b.ret) return; b.ret = true; b.hit = new Set(); if (b.edge) b.dmg *= 1.5; b.life = Math.max(b.life, 3); }
 function addBullet(x, y, vx, vy, life, dmg, extra) {
   bullets.push(Object.assign({ x, y, vx, vy, life, dmg, r: CFG.bulletRadius, color: '#fff', kind: 'bullet', pierce: false }, extra || {}));
 }
@@ -1155,6 +1292,9 @@ const ULTS = {
   rifle:    { name: 'Rayo perforante',  desc: 'Un haz gigante que atraviesa todo, con una onda que aparta un poco a los enemigos' },
   mg:       { name: 'Frenesí explosivo', desc: 'Durante 4 s todas tus balas son explosivas y hacen un 8% más de daño' },
   flame:    { name: 'Infierno',         desc: 'Estallido de fuego (el fuego del centro hace x4 de daño), anillo de llamas y cura el 20% de tu vida' },
+  arc:      { name: 'Tormenta eléctrica', desc: 'Un rayo cae sobre todos los enemigos cercanos con x6 de daño y los paraliza 1 s; +20% de cadencia 2 s' },
+  sword:    { name: 'Tormenta de filos', desc: 'Un giro de 360° que golpea a todos los enemigos cercanos con x5 de daño; +30% de velocidad 2 s' },
+  saw:      { name: 'Torbellino', desc: '10 discos salen en círculo con el doble de daño y vuelven a ti; +30% de velocidad 2 s' },
   launcher: { name: 'Salva de cohetes', desc: '5 cohetes al frente con x6 de daño, explosión a tu alrededor con el doble de daño y +20% de cadencia 2 s' }
 };
 function shotgunUlt(a) {
@@ -1199,6 +1339,30 @@ function useUlt() {
     }
     explode(player.x, player.y, w.radius, bd * 2, { fire: w.fire, fireT: w.fireT, fireDmg: w.fireDmg });   // y explota a tu alrededor con daño normal
     state.buffRate = 2;
+  } else if (id === 'arc') {
+    for (const e of enemies) {
+      if (e.hp <= 0 || Math.hypot(e.x - player.x, e.y - player.y) > 800) continue;
+      arcHit(e, ws.dmg * 6 * dm, 1);
+      fx.push({ kind: 'laser', x: e.x + (Math.random() - 0.5) * 60, y: e.y - 420, x2: e.x, y2: e.y, t: 0, dur: 0.3, color: '#e0f2fe' });
+    }
+    state.buffRate = 2;
+  } else if (id === 'sword') {
+    { const rl = lv_(stats.lv, 'sword_rb'); if (rl === 1) state.rbT = 30; else if (rl === 2) state.rbT = 60; }
+    const UR = 280, CL = 110;   // rango normal de la ulti y rango "muy cerca" del Caos
+    for (const e of enemies) {
+      if (e.hp <= 0 || Math.hypot(e.x - player.x, e.y - player.y) > UR + CFG.enemies[e.type].size) continue;
+      arcHit(e, ws.dmg * 5 * (ws.vacio && Math.hypot(e.x - player.x, e.y - player.y) - CFG.enemies[e.type].size < CL ? 4 : 1) * dm, 0);
+    }
+    for (const b of ebullets) if (!b.orb && Math.hypot(b.x - player.x, b.y - player.y) < UR) b.dead = true;
+    fx.push({ kind: 'slash', x: player.x, y: player.y, a: -Math.PI / 2, range: UR, arc: Math.PI * 2, dir: 1, t: 0, dur: 0.5, color: ws.vacio ? '#c084fc' : '#fde047' });
+    if (ws.vacio) { fx.push({ kind: 'ring', x: player.x, y: player.y, r: CL * 1.5, t: 0, dur: 0.7, color: '#7e22ce' }); fx.push({ kind: 'boom', x: player.x, y: player.y, r: CL, t: 0, dur: 0.6, color: '#3b0764' }); }
+    state.buffSpd = 2;
+  } else if (id === 'saw') {
+    for (let i = 0; i < 10; i++) {
+      const g = i * Math.PI * 2 / 10;
+      addBullet(player.x, player.y, Math.cos(g) * 650, Math.sin(g) * 650, 4, ws.dmg * 2 * dm, { kind: 'disc', pierce: true, hit: new Set(), r: ws.r * 1.1, color: '#e5e7eb', tt: 0, out: ws.out + 0.1, edge: ws.edge });
+    }
+    state.buffSpd = 2;
   }
   if (state.practice) state.ult = 0;   // en las pruebas la ulti no tiene espera
   else { state.ultTotal = ULT_CD * (state.ultHalf ? 0.5 : 1); state.ultHalf = false; state.ult = state.ultTotal; }
@@ -1207,7 +1371,93 @@ function useUlt() {
   sfx('power'); sfx('boom');
 }
 
-function dmgMul() { return (state.pw.p_dmg.t > 0 ? 2 : 1) * (state.buffMg > 0 ? 1.08 : 1); }   // poder Furia
+function dmgMul() { return (state.pw.p_dmg.t > 0 ? 2 : 1) * (state.buffMg > 0 ? 1.08 : 1) * (1 + 0.04 * lv_(stats.lv, 'gdmg')) * (1 + (stats.weapon === 'saw' ? 0.048 : 0.08) * lv_(stats.lv, 'mast_' + stats.weapon)); }
+function rateMul() { return (1 + 0.04 * lv_(stats.lv, 'grate')) * (1 + 0.06 * lv_(stats.lv, 'tempo_' + stats.weapon)); }   // poder Furia
+
+// Bastón de rayos: el rayo busca a los enemigos más cercanos a tu puntería y salta entre los que tienen cerca
+// Modos de la espada: Shift cambia entre ataque normal, a distancia y corte molecular (según lo comprado)
+function swModes(ws) { const m = ['normal']; if (ws.ranged) m.push('ranged'); if (ws.mol) m.push('mol'); return m; }
+function swMode(ws) { const m = swModes(ws); return m[(state.swMode || 0) % m.length]; }
+const SW_NAMES = { normal: 'Corte normal', ranged: 'Corte a distancia', mol: 'Corte molecular' };
+// Filo arcoíris: cada corte lleva un color con su efecto
+const RB_COLS = ['#ee1c25', '#ff8426', '#fff200', '#b5e61d', '#99d9ea', '#3f48cc', '#7a0bc0'];
+function rbActive() { return lv_(stats.lv, 'sword_rb') >= 3 || (state.rbT || 0) > 0; }
+function rbEffect(e, ci, dmg) {   // 0 rojo, 1 naranja, 2 amarillo, 3 verde, 4 azul claro, 5 azul oscuro (más rango, en la geometría del corte), 6 morado = todos
+  if (e.hp <= 0) return;
+  const all = ci === 6;
+  if (all || ci === 0) e.hp -= dmg;                                                                       // rojo: doble daño
+  if (all || ci === 1) e.burn = { t: 3, dps: dmg * 0.3 };                                                 // naranja: quema (y el fuego daña a los vecinos)
+  if (all || ci === 2) e.stun = Math.max(e.stun || 0, 0.5);                                               // amarillo: paraliza 0,5 s
+  if (all || ci === 3) player.hp = Math.min(stats.maxHp, player.hp + dmg * 0.05);                         // verde: roba el 5% del daño
+  if (all || ci === 4) e.slowT = Math.max(e.slowT || 0, 2);                                               // azul claro: ralentiza
+}
+function swordCut(base, dmg, range, arc, dir, lines, big) {
+  lines = lines || 1;
+  const rbOn = rbActive(), rbI = state.rbI = (state.rbI || 0) + 1;   // cada corte lleva el siguiente color
+  const lc = q => (rbI + q) % 7, rg = q => rbOn && lc(q) >= 5 ? 1.5 : 1;   // azul oscuro y morado: más rango
+  let maxR = 1; if (rbOn) for (let q = 0; q < lines; q++) maxR = Math.max(maxR, rg(q));
+  for (const e of enemies) {
+    if (e.hp <= 0) continue;
+    const rx = e.x - player.x, ry = e.y - player.y, d = Math.hypot(rx, ry), sz = CFG.enemies[e.type].size;
+    if (d > range * maxR + sz) continue;
+    let da = Math.atan2(ry, rx) - base; da = Math.atan2(Math.sin(da), Math.cos(da));
+    if (d > sz + 20 && Math.abs(da) > arc / 2) continue;
+    let hit = false;
+    for (let q = 0; q < lines; q++) {   // una vez por línea de corte
+      if (d > range * rg(q) + sz) continue;
+      hit = true; arcHit(e, dmg, 0); if (rbOn) rbEffect(e, lc(q), dmg);
+    }
+    if (hit) burst(e.x, e.y, '#ffffff', 4);
+  }
+  for (const b of ebullets) {   // la espada corta los disparos enemigos cercanos en la dirección del ataque
+    if (b.dead || b.orb) continue;
+    const rx = b.x - player.x, ry = b.y - player.y, d = Math.hypot(rx, ry);
+    if (d > range + b.r) continue;
+    let da = Math.atan2(ry, rx) - base; da = Math.atan2(Math.sin(da), Math.cos(da));
+    if (d > 24 && Math.abs(da) > arc / 2) continue;
+    if (lv_(stats.lv, 'sword_refl') && b.r <= 8 && b.dmg <= 70) {   // reflejos: los proyectiles pequeños vuelven contra los enemigos
+      const sp = Math.max(450, Math.hypot(b.vx, b.vy)), o = d || 1;
+      addBullet(b.x, b.y, rx / o * sp, ry / o * sp, 1.4, Math.max(20, b.dmg * 3), { r: 6, color: '#fde68a' });
+    }
+    b.dead = true; burst(b.x, b.y, '#ffffff', 3);
+  }
+  range *= maxR;
+  fx.push({ kind: 'slash', x: player.x, y: player.y, a: base, range, arc, dir, t: 0, dur: big ? 0.45 : 0.3, color: rbOn ? RB_COLS[rbI % 7] : big ? '#c084fc' : '#e0f2fe', mini: !big, lines });
+  sfx('sword');
+}
+function arcHit(e, dmg, stun) {
+  if (Math.random() < stats.critP) { dmg *= stats.critM; burst(e.x, e.y, '#fde047', 3); }
+  e.hp -= dmg; burst(e.x, e.y, '#7dd3fc', 3); sfx('hit');
+  if (stun) e.stun = Math.max(e.stun || 0, stun);
+}
+function arcShoot(a, ws) {
+  const dx = a.x, dy = a.y, ang = Math.atan2(dy, dx);
+  const cands = [];
+  for (const e of enemies) {
+    if (e.hp <= 0) continue;
+    const rx = e.x - player.x, ry = e.y - player.y, along = rx * dx + ry * dy, perp = Math.abs(rx * dy - ry * dx);
+    if (along > 0 && along < 720 && perp < 140 + along * 0.25) cands.push({ e, score: perp + along * 0.15 });
+  }
+  cands.sort((p, q) => p.score - q.score);
+  const used = new Set(); let fired = 0;
+  for (const c of cands) {
+    if (fired >= ws.beams) break;
+    if (used.has(c.e)) continue;
+    fired++;
+    let cur = c.e, from = { x: player.x + dx * 14, y: player.y + dy * 14 };
+    for (let j = 0; j <= ws.chains && cur; j++) {
+      used.add(cur);
+      fx.push({ kind: 'laser', x: from.x, y: from.y, x2: cur.x, y2: cur.y, t: 0, dur: 0.14, color: '#7dd3fc' });
+      if (shieldBlocks(cur, from.x, from.y)) { burst(cur.x, cur.y, '#e0f2fe', 3); sfx('block'); break; }
+      arcHit(cur, ws.dmg, ws.stun);
+      from = cur;
+      let best = null, bd = ws.jump;
+      for (const o of enemies) if (o.hp > 0 && !used.has(o)) { const d = Math.hypot(o.x - from.x, o.y - from.y); if (d < bd) { bd = d; best = o; } }
+      cur = best;
+    }
+  }
+  if (!fired) fx.push({ kind: 'laser', x: player.x + dx * 14, y: player.y + dy * 14, x2: player.x + dx * 260, y2: player.y + dy * 260, t: 0, dur: 0.1, color: '#7dd3fc' });
+}
 
 function shoot(a, echo) {
   const R = CFG.playerRadius;
@@ -1241,7 +1491,30 @@ function shoot(a, echo) {
       { kind: 'flame', pierce: true, hit: new Set(), r: ws.r, grow: 25, maxLife: ws.life });
   } else if (id === 'launcher') {
     addBullet(sx, sy, a.x * 520, a.y * 520, 1.0, 0,
-      { kind: 'rocket', r: 7, color: '#fb923c', boomR: ws.radius, boomDmg: (30 + 6 * ws.ldmg) * dm, fire: ws.fire, fireT: ws.fireT, fireDmg: ws.fireDmg, double2: ws.double });
+      { kind: 'rocket', r: 7, color: '#fb923c', boomR: ws.radius, boomDmg: (30 + 6 * ws.ldmg) * (1 + 0.1 * lv_(stats.lv, 'l_dmgx')) * dm, fire: ws.fire, fireT: ws.fireT, fireDmg: ws.fireDmg, double2: ws.double, split: ws.split });
+  } else if (id === 'arc') {
+    arcShoot(a, ws);
+  } else if (id === 'sword') {
+    const mode = swMode(ws);
+    if (mode === 'ranged') {   // corte a distancia: ondas que salen despedidas hacia delante
+      for (let i = 0; i < ws.cuts; i++) {
+        const off = (i - (ws.cuts - 1) / 2) * 30;   // ondas paralelas
+        addBullet(sx - Math.sin(base) * off, sy + Math.cos(base) * off, Math.cos(base) * 600, Math.sin(base) * 600, 0.8, ws.dmg * 0.75, { kind: 'wave', pierce: true, hit: new Set(), r: 40, ang: base, color: rbActive() ? RB_COLS[(i + (state.rbI = (state.rbI || 0) + 1)) % 7] : '#e0f2fe', rb: rbActive() ? ((state.rbI + i) % 7) : undefined });
+        { const wb = bullets[bullets.length - 1]; if (wb.rb >= 5) wb.life *= 1.6; }   // azul oscuro / morado: la onda llega más lejos
+      }
+      fx.push({ kind: 'slash', x: player.x, y: player.y, a: base, range: 70, arc: 1.8, dir: 1, t: 0, dur: 0.25, color: '#bae6fd' });
+      sfx('sword');
+    } else if (mode === 'mol') {   // corte molecular: enorme, doble de daño, muy lento
+      swordCut(base, ws.dmg * 2, ws.range * 1.9, 3.0, 1, ws.cuts, true);
+    } else {
+      swordCut(base, ws.dmg, ws.range, ws.arc, 1, ws.cuts);   // doble / triple corte: líneas paralelas a la vez
+    }
+  } else if (id === 'saw') {
+    const n = ws.count;
+    for (let i = 0; i < n; i++) {
+      const g = base + (i - (n - 1) / 2) * 0.28;
+      addBullet(sx, sy, Math.cos(g) * 650, Math.sin(g) * 650, 4, ws.dmg, { kind: 'disc', pierce: true, hit: new Set(), r: ws.r, color: '#e5e7eb', tt: 0, out: ws.out, edge: ws.edge });
+    }
   } else {
     const ux = Math.cos(base), uy = Math.sin(base);
     for (const o of (ws.double && ws.triple ? [-10, 0, 10] : ws.double ? [-6, 6] : [0]))
@@ -1249,7 +1522,8 @@ function shoot(a, echo) {
   }
   sfx(id);
   if (echo) return;
-  player.cdMax = ws.cooldown !== undefined ? ws.cooldown : w.cooldown;
+  player.cdMax = (ws.cooldown !== undefined ? ws.cooldown : w.cooldown) / rateMul();
+  if (id === 'sword') { const md = swMode(ws); if (md === 'ranged') player.cdMax *= 1.6; else if (md === 'mol') player.cdMax *= 3.2; }   // ataques más lentos
   player.cd = player.cdMax;
   if (id === 'shotgun' && ws.double2) state.echo = { t: 0.05, a: { x: a.x, y: a.y } };
 }
@@ -1279,6 +1553,7 @@ function dropCoins(e, def) {
 
 function hurtPlayer(dmg) {
   if (player.invuln > 0 || state.over) return;
+  dmg *= curBossSrc ? state.mods.bdmg : state.mods.dmg;   // modificadores de daño de los enemigos / jefes
   let m = 1 - stats.armor;                       // Armadura pasiva
   if (state.pw.p_def.t > 0) m *= 0.5;            // poder Coraza
   if (state.buffDef > 0) m *= 0.8;               // ulti de la escopeta: 20% de resistencia
@@ -1311,7 +1586,7 @@ function explode(x, y, r, dmg, opts) {
   for (const e of enemies) {
     const size = CFG.enemies[e.type].size;
     if (Math.hypot(e.x - x, e.y - y) - size < r) {
-      if (shieldBlocks(e, x, y)) { burst(e.x, e.y, '#e0f2fe', 3); continue; }
+      if (!opts.pierce && shieldBlocks(e, x, y)) { burst(e.x, e.y, '#e0f2fe', 3); continue; }
       e.hp -= dmg;
       burst(e.x, e.y, CFG.enemies[e.type].color, 3);
     }
@@ -1371,13 +1646,14 @@ function usePower(p) {
       if (d < R + CFG.enemies[e.type].size) {
         e.hp -= 40;
         const nx = d > 0.001 ? (e.x - player.x) / d : 1, ny = d > 0.001 ? (e.y - player.y) / d : 0;
-        e.x += nx * 140; e.y += ny * 140;
+        e.x += nx * 210; e.y += ny * 210;
         burst(e.x, e.y, '#fde047', 4);
       }
     }
     for (const b of ebullets) if (Math.hypot(b.x - player.x, b.y - player.y) < R) b.dead = true;
   } else if (p.id === 'p_dash') {
-    fx.push({ kind: 'ring', x: player.x, y: player.y, r: 60, t: 0, dur: 0.4, color: '#4cc9f0' });   // la velocidad x2 se aplica mientras dura el poder
+    explode(player.x, player.y, 450, 350, { color: '#fde047', pierce: true });
+    fx.push({ kind: 'ring', x: player.x, y: player.y, r: 450, t: 0, dur: 0.5, color: '#fde047' });
   } else if (p.id === 'p_ult') {
     if (state.ult > 0) state.ult *= 0.5; else state.ultHalf = true;
     fx.push({ kind: 'ring', x: player.x, y: player.y, r: 80, t: 0, dur: 0.5, color: '#fde047' });
@@ -1472,8 +1748,17 @@ function rbAI(e, def, dt, toP, spawned) {
       if (!e.hit && beamHits(e, e.lockA, 1500, 34)) { e.hit = true; hurtPlayer(400 * D); }
       if (e.hxT <= 0) { e.hx = 'idle'; e.hxT = 2.5; e.bm = null; }
     }
-  } else if (t === 'rbOct' || t === 'rbOct1' || t === 'rbOct2' || t === 'rbOct3') {
+  } else if (t === 'rbOct' || t === 'rbOct1' || t === 'rbOct2' || t === 'rbOct3' || t === 'rbOctG') {
     chase(); e.angle += dt * 1.5;
+    if (t !== 'rbOctG') {   // si no lo matas en 7 s, pasa a la fase anterior: pequeño → mediano → grande → gigante
+      e.gT = (e.gT === undefined ? 7 : e.gT) - dt;
+      if (e.gT <= 0) {
+        const up = { rbOct3: 'rbOct2', rbOct2: 'rbOct1', rbOct1: 'rbOct', rbOct: 'rbOctG' }[t];
+        const nb = makeEnemy(up, e.x, e.y);
+        e.type = up; e.hp = nb.hp; e.maxHp = nb.maxHp; e.gT = undefined;
+        fx.push({ kind: 'ring', x: e.x, y: e.y, r: 70, t: 0, dur: 0.4, color: '#e879f9' }); sfx('summon');
+      }
+    }
   } else if (t === 'rbStar4') {
     keepDistance(e, def, 200, 340, dt); e.angle += dt;
     e.hlT = (e.hlT === undefined ? 2 : e.hlT) - dt;
@@ -1488,10 +1773,10 @@ function rbAI(e, def, dt, toP, spawned) {
     if (e.shT <= 0 && vis) { shot(toP, 200, 70, 13, '#86efac', { homing: true, ttl: 7, healR: 50, hl: new Set() }); sfx('enemyShot'); e.shT = 3.5; }
   } else if (t === 'rbStar8') {
     keepDistance(e, def, 240, 380, dt); e.angle += dt * 0.7;
-    e.rT = (e.rT === undefined ? 2 : e.rT) - dt; e.cpT = (e.cpT === undefined ? 10 : e.cpT) - dt;
+    e.rT = (e.rT === undefined ? 2 : e.rT) - dt; e.cpT = (e.cpT === undefined ? 6 : e.cpT) - dt;
     if (e.rT <= 0 && vis) { for (let k = 0; k < 8; k++) shot(e.angle + k * Math.PI / 4, 270, 55, 6, '#fde047'); sfx('enemyShot'); e.rT = 2.5; }
     if (e.cpT <= 0) {
-      e.cpT = 10;
+      e.cpT = 6;
       if (enemies.filter(o => o.type === 'rbStar8').length + spawned.filter(o => o.type === 'rbStar8').length < 8) {
         const c = makeEnemy('rbStar8', e.x + 40, e.y); c.noDrop = true; spawned.push(c); fx.push({ kind: 'ring', x: e.x, y: e.y, r: 70, t: 0, dur: 0.4, color: '#fde047' });
       }
@@ -1533,6 +1818,16 @@ function keepDistance(e, def, minD, maxD, dt) {
 }
 
 function update(dt) {
+  if (state.inf) {   // modo infinito: cada 30 s los enemigos ganan vida (5% → 10% a los 5 min → 20% a los 10 → 50% a los 15 → 100% a los 20)
+    state.inf.t += dt;
+    while (state.inf.steps < Math.floor(state.inf.t / 30)) {
+      state.inf.steps++;
+      const el = state.inf.steps * 30, step = el <= 300 ? 0.05 : el <= 600 ? 0.10 : el <= 900 ? 0.20 : el <= 1200 ? 0.50 : 1.0;
+      const nm = state.inf.m + step, ratio = nm / state.inf.m; state.inf.m = nm;
+      for (const e of enemies) { e.hp *= ratio; e.maxHp *= ratio; }
+      state.banner = { text: 'Los enemigos ganan +' + Math.round(step * 100) + '% de vida (total x' + nm.toFixed(2) + ')', t: 2 };
+    }
+  }
   const bossAlive = enemies.some(e => e.type === 'final' || e.type === 'final2' || e.type === 'final3' || e.type === 'final4');
   if (!bossAlive && !state.practice) state.time += dt;      // el reloj se para mientras hay un jefe vivo
   if (state.banner) { state.banner.t -= dt; if (state.banner.t <= 0) state.banner = null; }
@@ -1567,7 +1862,7 @@ function update(dt) {
   let dx = (keys['d'] ? 1 : 0) - (keys['a'] ? 1 : 0);
   let dy = (keys['s'] ? 1 : 0) - (keys['w'] ? 1 : 0);
   if (dx || dy) { const l = Math.hypot(dx, dy); dx /= l; dy /= l; }
-  let spd = stats.speed * (state.buffSpd > 0 ? 1.3 : 1) * (state.pw.p_dash.t > 0 ? 2 : 1);   // poder Aceleración: x2
+  let spd = stats.speed * (state.buffSpd > 0 ? 1.3 : 1);
   if (state.invT > 0) { dx = -dx; dy = -dy; }          // espiral arcoíris: controles invertidos
   let slowF = state.slowT > 0 ? 0.4 : 1;               // triángulo arcoíris: ralentiza
   for (const e of enemies) if (e.type === 'rbMoon' && Math.hypot(e.x - player.x, e.y - player.y) < 190) slowF = Math.min(slowF, 0.5);   // aura de la medialuna
@@ -1611,6 +1906,11 @@ function update(dt) {
     state.ultEcho.t -= dt;
     if (state.ultEcho.t <= 0) { const ea = state.ultEcho.a; state.ultEcho = null; if (stats.weapon === 'shotgun') shotgunUlt(ea); }
   }
+  if (state.rbT > 0) state.rbT -= dt;
+  if (state.swq && state.swq.length) {   // cortes extra de la espada
+    for (const q of state.swq) { q.t -= dt; if (q.t <= 0 && !q.done) { q.done = true; swordCut(q.a, q.dmg, q.range, q.arc, q.dir); } }
+    state.swq = state.swq.filter(q => !q.done);
+  }
   if (state.echo) {   // segundo disparo de la escopeta
     state.echo.t -= dt;
     if (state.echo.t <= 0) { const ea = state.echo.a; state.echo = null; if (stats.weapon === 'shotgun') shoot(ea, true); }
@@ -1622,12 +1922,13 @@ function update(dt) {
   if (!state.practice && state.phase2 && !state.boss2Spawned && state.time >= 600) spawnBoss('final2');
   // ronda robot: sobrevivir hasta los 15:00 completa el mapa
   if (!state.practice && state.phase3 && !state.boss3Spawned && state.time >= 900) { saveProg(currentMap, 3); spawnBoss('final3'); }
-  if (!state.practice && state.phase4 && !state.boss4Spawned && state.time >= 1080) spawnBoss('final4');
+  if (!state.practice && state.phase4 && !state.boss4Spawned && state.time >= 1200) spawnBoss('final4');
 
   // aparición de enemigos: +1 a la vez cada 20 s hasta el minuto; después +1 cada 30 s; tope según la dificultad
   state.spawnTimer -= dt;
   if (state.practice) {   // modo prueba: reaparece el enemigo cuando muere; lo que genera (al vivir o al morir) se queda para probarlo
-    const mainAlive = enemies.some(e => e.type === state.practice);
+    const fam = t => /^rbOct/.test(t) ? 'rbOct' : /^rbPent/.test(t) ? 'rbPent' : t;   // octógonos y pentágonos: cuentan todas sus piezas
+    const mainAlive = enemies.some(e => fam(e.type) === fam(state.practice));
     state.pracGone = mainAlive ? 0 : (state.pracGone || 0) + dt;
     if (!mainAlive && ((enemies.length === 0 && state.pracGone >= 1.5) || state.pracGone >= 15)) {
       enemies = [];
@@ -1638,21 +1939,38 @@ function update(dt) {
   }
   if (state.spawnTimer <= 0 && !state.practice && !bossAlive && (!state.boss2Spawned || state.phase3) && (!state.bossSpawned || state.phase2)) {
     const t = state.time;
-    const n = state.phase4 ? 3 : state.phase3 ? 2 : Math.min(state.phase2 ? state.diff.cap - 1 : state.diff.cap, t < 60 ? 1 + Math.floor(t / 20) : 4 + Math.floor((t - 60) / 30));
+    const n = state.phase4 ? (t >= 1080 ? 10 : 3) : state.phase3 ? 8 : Math.min(state.phase2 ? state.diff.cap - 1 : state.diff.cap, t < 60 ? 1 + Math.floor(t / 20) : 4 + Math.floor((t - 60) / 30));
     for (let i = 0; i < n; i++) spawnEnemy();
     state.spawnTimer = spawnInterval(t) * state.diff.interval * (state.phase4 ? 2.2 : state.phase3 ? 2.6 : state.phase2 ? 1.4 : 1);
   }
 
   // balas del jugador (pasos cortos para no atravesar muros)
   for (const b of bullets) {
+    if (b.kind === 'disc') {   // sierra boomerang: sale, da la vuelta y regresa hacia ti
+      b.tt += dt;
+      if (!b.ret && (b.tt >= b.out || (b.retAt !== undefined && b.tt >= b.retAt))) discReturn(b);   // fin del alcance, o poco después de chocar con un enemigo
+      if (b.ret) { const ddx = player.x - b.x, ddy = player.y - b.y, dd = Math.hypot(ddx, ddy) || 1; if (dd < 26) b.life = 0; else { b.vx = ddx / dd * 800; b.vy = ddy / dd * 800; } }
+    }
     const steps = Math.max(1, Math.ceil(Math.hypot(b.vx, b.vy) * dt / 12));
     for (let s = 0; s < steps; s++) {
+      if (b.kind === 'disc') {   // la sierra no atraviesa paredes: al chocar vuelve; en el regreso bordea los obstáculos
+        const nx = b.x + b.vx * dt / steps, ny = b.y + b.vy * dt / steps, rr = b.r * 0.7;
+        if (!obstacles.length || !hitsObstacle(nx, ny, rr)) { b.x = nx; b.y = ny; }
+        else if (!b.ret) { discReturn(b); break; }
+        else if (!hitsObstacle(nx, b.y, rr)) b.x = nx;
+        else if (!hitsObstacle(b.x, ny, rr)) b.y = ny;
+        continue;
+      }
       b.x += b.vx * dt / steps; b.y += b.vy * dt / steps;
-      if (obstacles.length && hitsObstacle(b.x, b.y, b.kind === 'flame' || b.kind === 'ult' ? 2 : b.r)) {
+      if (b.kind !== 'disc' && obstacles.length && hitsObstacle(b.x, b.y, b.kind === 'flame' || b.kind === 'ult' ? 2 : b.r)) {
         b.life = 0;
         if (b.kind === 'rocket') detonate(b); else burst(b.x, b.y, '#9aa4bd', 3);
         break;
       }
+    }
+    if (b.kind === 'disc' && (b.x < 0 || b.x > WW || b.y < 0 || b.y > WH)) {   // si sale del mapa, vuelve en vez de perderse
+      b.x = Math.max(0, Math.min(WW, b.x)); b.y = Math.max(0, Math.min(WH, b.y));
+      if (!b.ret) discReturn(b);
     }
     b.life -= dt;
     if (b.kind === 'flame') b.r += b.grow * dt;
@@ -1660,7 +1978,13 @@ function update(dt) {
   }
 
   // balas enemigas
+  const infAura = stats.weapon === 'sword' && lv_(stats.lv, 'sword_inf');
   for (const b of ebullets) {
+    curBossSrc = !!b.fb;
+    if (infAura && !b.orb) {   // aura Infinito: los proyectiles cercanos van a un 35% de su velocidad
+      const dd = Math.hypot(b.x - player.x, b.y - player.y);
+      if (dd < 90 && !b.sl) { b.sl = true; b.vx *= 0.35; b.vy *= 0.35; } else if (dd > 105 && b.sl) { b.sl = false; b.vx /= 0.35; b.vy /= 0.35; }
+    }
     if (b.homing) {   // cohete teledirigido del robot gris
       b.ttl -= edt;
       if (b.ttl <= 0) { b.dead = true; fx.push({ kind: 'boom', x: b.x, y: b.y, r: 40, t: 0, dur: 0.3, color: '#a1a1aa' }); continue; }
@@ -1693,6 +2017,7 @@ function update(dt) {
       hurtPlayer(b.dmg); b.dead = true;
     }
   }
+  curBossSrc = false;
   ebullets = ebullets.filter(b => !b.dead && b.x > -80 && b.x < WW + 80 && b.y > -80 && b.y < WH + 80);
 
   // bombas: explotan a los 3 s o si el jugador las toca
@@ -1722,8 +2047,15 @@ function update(dt) {
   // enemigos
   const spawned = [];
   for (const e of enemies) { e._px = e.x; e._py = e.y; if (e.haste > 0) e.haste -= edt; }
+  let tagN = ebullets.length, tagBoss = false;   // marca las balas creadas por jefes (para su multiplicador de daño)
   for (const e of enemies) {
-    const dt = edt;                                   // los enemigos usan el tiempo ralentizado
+    const boss = isBossT(e.type), mo = state.mods;
+    const rf = boss ? mo.brate : mo.rate, sf = boss ? 1 : mo.speed;      // modificadores: cadencia (reloj interno) y velocidad
+    const dt = edt * rf;                              // los enemigos usan el tiempo ralentizado
+    e._k = sf / rf;                                   // la velocidad de movimiento se corrige después para que solo cambie la cadencia
+    curBossSrc = boss;
+    for (let i = tagN; i < ebullets.length; i++) if (tagBoss) ebullets[i].fb = true;
+    tagN = ebullets.length; tagBoss = boss;
     const def = CFG.enemies[e.type];
     const toP = Math.atan2(player.y - e.y, player.x - e.x);
     if (e.type === 'ghostOrange') {   // deja un rastro de fuego
@@ -2000,7 +2332,7 @@ function update(dt) {
       };
       if (ph !== e.ph) {
         if (e.ph) { state.banner = { text: '¡POLÍGONO ARCOÍRIS: FASE ' + ph + '!', t: 2 }; sfx('summon'); }
-        e.ph = ph; e.waveT = e.ph === 1 ? 2 : 3;
+        e.ph = ph; e.waveT = e.ph === 1 ? 1.5 : 2;
         if (ph === 3) spw('rbSq', ...at(toP + Math.PI, 160));
         if (ph === 4) { spw('rbPent', ...at(toP + 0.8, 170)); spw('rbPent', ...at(toP - 0.8, 170)); }
       }
@@ -2012,19 +2344,37 @@ function update(dt) {
       e.waveT -= dt;
       const sh = (a, v, d, r, c) => ebullets.push({ x: e.x, y: e.y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, dmg: d * state.diff.dmg, r, color: c });
       if (e.fanT <= 0) {
-        const n = 5 + ph * 2;
-        for (let i = 0; i < n; i++) sh(toP + (i - (n - 1) / 2) * 0.15, 340, 60, 6, '#f0abfc');
-        sfx('enemyShot'); e.fanT = ph >= 3 ? 1.6 : 2.2;
+        const n = 7 + ph * 2;
+        for (let i = 0; i < n; i++) sh(toP + (i - (n - 1) / 2) * 0.15, 360, 90, 6, '#f0abfc');
+        sfx('enemyShot'); e.fanT = ph >= 3 ? 1.3 : 1.8;
       }
       if (ph >= 2 && e.misT <= 0) {
-        ebullets.push({ x: e.x, y: e.y, vx: Math.cos(toP) * 380, vy: Math.sin(toP) * 380, dmg: 300 * state.diff.dmg, r: 26, color: '#c084fc', missile: true, boomR: 200 });
-        sfx('enemyShot'); e.misT = ph >= 3 ? 3.5 : 4.5;
+        for (const off of (ph >= 4 ? [-0.25, 0, 0.25] : [0])) ebullets.push({ x: e.x, y: e.y, vx: Math.cos(toP + off) * 400, vy: Math.sin(toP + off) * 400, dmg: 450 * state.diff.dmg, r: 26, color: '#c084fc', missile: true, boomR: 220 });
+        sfx('enemyShot'); e.misT = ph >= 3 ? 3 : 4;
       }
       if (ph >= 3 && e.ringT <= 0) {
-        for (let i = 0; i < 24; i++) sh(i / 24 * Math.PI * 2 + e.angle, 250, 50, 5, '#67e8f9');
-        sfx('enemyShot'); e.ringT = 5;
+        for (let i = 0; i < 32; i++) sh(i / 32 * Math.PI * 2 + e.angle, 260, 75, 5, '#67e8f9');
+        sfx('enemyShot'); e.ringT = 4;
       }
-      if (e.waveT <= 0) { wave(); e.waveT = ph <= 2 ? 10 : 12; }
+      // ataques nuevos: espiral continua (fase 2+), aspas giratorias (fase 3+) y lluvia sobre el jugador (fase 4)
+      e.spiT = (e.spiT === undefined ? 6 : e.spiT) - dt;
+      if (ph >= 2 && e.spiT <= 0) {
+        e.spiOn = (e.spiOn || 0) + dt;
+        e.spiS = (e.spiS || 0) - dt;
+        if (e.spiS <= 0) { e.spiS = 0.07; e.spiA = (e.spiA || 0) + 0.42; sh(e.spiA, 300, 70, 5, '#fde68a'); sh(e.spiA + Math.PI, 300, 70, 5, '#fde68a'); }
+        if (e.spiOn > 3) { e.spiOn = 0; e.spiT = 7; }
+      }
+      e.bladeT = (e.bladeT === undefined ? 8 : e.bladeT) - dt;
+      if (ph >= 3 && e.bladeT <= 0) {
+        for (let k = 0; k < 4; k++) for (let j = 1; j <= 6; j++) sh(e.angle + k * Math.PI / 2 + j * 0.05, 150 + j * 45, 85, 6, '#fb7185');
+        sfx('enemyShot'); e.bladeT = 6;
+      }
+      e.rainT = (e.rainT === undefined ? 5 : e.rainT) - dt;
+      if (ph >= 4 && e.rainT <= 0) {
+        for (let i = 0; i < 10; i++) { const rx = player.x + (Math.random() - 0.5) * 520, ry = player.y - 380 - Math.random() * 120; ebullets.push({ x: rx, y: ry, vx: (Math.random() - 0.5) * 30, vy: 330, dmg: 100 * state.diff.dmg, r: 8, color: '#86efac' }); }
+        sfx('enemyShot'); e.rainT = 2.2;
+      }
+      if (e.waveT <= 0) { wave(); e.waveT = ph <= 2 ? 6 : 7; }
     } else if (e.type === 'final3') {
       // Mecha Titán: 4 fases (al 75 %, 50 % y 25 %). Cada fase trae su oleada de robots, y dispara abanicos, misiles y anillos.
       const f = e.hp / e.maxHp, ph = f > 0.75 ? 1 : f > 0.5 ? 2 : f > 0.25 ? 3 : 4;
@@ -2317,6 +2667,35 @@ function update(dt) {
       e.angle = e.type === 'sq' ? e.angle + dt : (e.type === 'split' || e.type === 'boss') ? e.angle + dt * 0.8 : toP;
     }
   }
+  for (let i = tagN; i < ebullets.length; i++) if (tagBoss) ebullets[i].fb = true;
+  curBossSrc = false;
+  for (const e of enemies) {   // modificadores: movimiento, generación de enemigos y duplicación
+    if (e._k !== undefined && e._k !== 1 && e._px !== undefined) {
+      const mx = e.x - e._px, my = e.y - e._py;
+      if (Math.hypot(mx, my) < 120) { e.x = e._px + mx * e._k; e.y = e._py + my * e._k; }
+    }
+    if (e.slowT > 0) {   // azul claro: movimiento a la mitad
+      e.slowT -= edt;
+      if (e._px !== undefined) { const mx = e.x - e._px, my = e.y - e._py; if (Math.hypot(mx, my) < 120) { e.x = e._px + mx * 0.5; e.y = e._py + my * 0.5; } }
+    }
+    if (e._k !== undefined) {
+      const boss = isBossT(e.type), mo = state.mods, rf = boss ? mo.brate : mo.rate;
+      const gf = boss ? mo.bgen : mo.gen;
+      if (gf > rf) { const ex = edt * (gf - rf); for (const k of ['sumT', 'waveT']) if (typeof e[k] === 'number') e[k] -= ex; if (e.k && typeof e.k.s === 'number') e.k.s -= ex; }
+      const df = Math.max(gf, mo.dup);
+      if (df > rf && typeof e.cpT === 'number') e.cpT -= edt * (df - rf);
+    }
+  }
+  for (const e of enemies) {   // parálisis del bastón y sangrado de la sierra
+    if (e.stun > 0 && e._px !== undefined) { e.stun -= edt; e.x = e._px; e.y = e._py; }
+    if (e.burn) {   // fuego del filo naranja: también daña a los enemigos que estén junto al quemado
+      const bd = e.burn.dps * edt; e.hp -= bd;
+      for (const o of enemies) if (o !== e && o.hp > 0 && Math.hypot(o.x - e.x, o.y - e.y) < 80) o.hp -= bd;
+      if (Math.random() < 0.15) burst(e.x, e.y, '#fb923c', 1);
+      e.burn.t -= edt; if (e.burn.t <= 0) e.burn = null;
+    }
+    if (e.bleed) { e.hp -= e.bleed.dps * edt; e.bleed.t -= edt; if (e.bleed.t <= 0) e.bleed = null; }
+  }
   for (const e of enemies) if (e.haste > 0 && e._px !== undefined) { e.x += (e.x - e._px) * 0.8; e.y += (e.y - e._py) * 0.8; }   // rayo: +80 % de velocidad
   enemies = enemies.concat(spawned);
 
@@ -2352,10 +2731,22 @@ function update(dt) {
         b.life = 0; burst(b.x, b.y, '#e0f2fe', 4); sfx('block'); detonate(b);
         break;
       }
-      if (b.kind === 'rocket') { detonate(b); b.life = 0; break; }
+      if (b.rb !== undefined) rbEffect(e, b.rb, b.dmg);
+      if (b.kind === 'rocket') {
+        if (b.split && !b.mini) {   // minicohetes: salen por detrás del primer objetivo con el 75 % del daño
+          const ba = Math.atan2(b.vy, b.vx);
+          for (const off of [-0.55, 0, 0.55]) {
+            const g = ba + off;
+            addBullet(e.x + Math.cos(ba) * (def.size + 6), e.y + Math.sin(ba) * (def.size + 6), Math.cos(g) * 480, Math.sin(g) * 480, 0.6, 0,
+              { kind: 'rocket', mini: true, r: 5, color: '#fdba74', boomR: b.boomR * 0.7, boomDmg: b.boomDmg * 0.75, hit: new Set([e]) });
+          }
+        }
+        detonate(b); b.life = 0; break;
+      }
       let dmgDealt = b.dmg;
-      if (Math.random() < stats.critP) { dmgDealt *= stats.critM; burst(b.x, b.y, '#fde047', 3); }   // golpe crítico
+      if (Math.random() < stats.critP) { dmgDealt *= (b.kind === 'flame' ? 5 : stats.critM); burst(b.x, b.y, '#fde047', 3); }   // golpe crítico
       e.hp -= dmgDealt;
+      if (b.kind === 'disc' && !b.ret && b.retAt === undefined) b.retAt = b.tt + 0.18;   // tras chocar con un enemigo, la sierra vuelve enseguida
       burst(b.x, b.y, def.color, b.kind === 'flame' ? 1 : 4);
       sfx('hit');
       if (b.explosive) { explode(b.x, b.y, b.boomR, b.boomDmg); b.life = 0; break; }
@@ -2410,17 +2801,24 @@ function update(dt) {
       hurtPlayer(300 * state.diff.dmg); e.slowT = 3; e.boomCd = 6;
     }
     if (d < minD + 3 && e.type === 'rbSpiral') { if (!(state.invT > 0)) state.banner = { text: '¡CONTROLES INVERTIDOS!', t: 1.5 }; state.invT = 5; }
+    curBossSrc = isBossT(e.type);
     if (d < minD + 3 && def.dmg > 0) hurtPlayer((e.type === 'sniper' ? 10 : def.dmg) * (def.robot ? RD : 1) * state.diff.dmg);
   }
 
   for (const e of enemies) if (e.type === 'final' || e.type === 'final2' || e.type === 'final3' || e.type === 'final4') bossShield(e, dt);
 
   // muertes -> monedas y efectos especiales
+  for (const e of enemies) {   // destello blanco al recibir daño
+    if (e._hp !== undefined && e.hp < e._hp - 0.01) e.flash = 0.09;
+    e._hp = e.hp;
+    if (e.flash > 0) e.flash -= dt;
+  }
   const born = []; let titanDied = false, kingDied = false, mechaDied = false, polyDied = false;
   for (const e of enemies) {
     if (e.hp > 0) continue;
     const def = CFG.enemies[e.type];
     state.kills++;
+    if (stats.weapon === 'sword' && lv_(stats.lv, 'sword_life')) player.hp = Math.min(stats.maxHp, player.hp + stats.maxHp * 0.01);   // Robavidas
     state.killsBy[e.type] = (state.killsBy[e.type] || 0) + 1;
     burst(e.x, e.y, def.color, 14);
     sfx('kill');
@@ -2471,13 +2869,13 @@ function update(dt) {
     if (e.type === 'final3' && !state.practice) {   // el Mecha Titán cae: victoria final
       saveProg(currentMap, 4);
       mechaDied = true; state.phase4 = true; state.spawnTimer = 3; ebullets = []; fires = [];
-      state.banner = { text: '¡MECHA TITÁN DERROTADO! RONDA ARCOÍRIS: SOBREVIVE HASTA LOS 18:00', t: 5 };
+      state.banner = { text: '¡MECHA TITÁN DERROTADO! RONDA ARCOÍRIS: SOBREVIVE HASTA LOS 20:00', t: 5 };
     }
     if (e.type === 'final4' && !state.practice) {   // el Polígono Arcoíris cae: victoria final
       polyDied = true; ebullets = []; state.victory = true; state.winBoss = 'Polígono Arcoíris';
     }
-    if (e.type === 'rbOct' || e.type === 'rbOct1' || e.type === 'rbOct2') {   // se parte en 2 más pequeños
-      const nk = e.type === 'rbOct' ? 'rbOct1' : e.type === 'rbOct1' ? 'rbOct2' : 'rbOct3';
+    if (e.type === 'rbOctG' || e.type === 'rbOct' || e.type === 'rbOct1' || e.type === 'rbOct2') {   // se parte en 2 más pequeños
+      const nk = { rbOctG: 'rbOct', rbOct: 'rbOct1', rbOct1: 'rbOct2', rbOct2: 'rbOct3' }[e.type];
       for (const sd of [-1, 1]) born.push(makeEnemy(nk, e.x + sd * 16, e.y));
     }
     if (e.type === 'rbPent' || e.type === 'rbPent1') {   // se parte en 3 más pequeños con 1/3 de la vida
@@ -2534,11 +2932,26 @@ function gameOver() {
   document.getElementById('overTitle').style.color = '';
   document.getElementById('badge').style.display = 'none';
   document.getElementById('badgeLabel').textContent = '';
-  const news = finishRun();
+  document.getElementById('infinite').style.display = 'none';
+  const news = state.inf ? finishInf() : finishRun();
   document.getElementById('stats').textContent =
-    `Tiempo: ${fmt(state.time)}  ·  Enemigos: ${state.kills}  ·  Monedas de la partida: ${state.coins}`;
+    `Tiempo: ${fmt(state.time)}  ·  Enemigos: ${state.kills}  ·  Monedas de la partida: ${state.coins}` + (state.inf ? `  ·  Modo infinito: ${fmt(state.inf.t)} (vida enemiga x${state.inf.m.toFixed(2)})` : '');
   document.getElementById('records').textContent = news.length ? `★ ¡Nuevo récord de ${news.join(', ')}!` : '';
   document.getElementById('over').style.display = 'flex';
+}
+// Fin de una partida que siguió en modo infinito: suma lo conseguido después de la victoria
+function finishInf() {
+  if (!state.inf || state.infDone) return [];
+  state.infDone = true;
+  const b = state.infBase, news = [], r = getRecords();
+  setTotal(getTotal() + state.coins - b.coins);
+  if (r.maxKills > 0 && state.kills > r.maxKills) news.push('enemigos');
+  if (r.maxCoins > 0 && state.coins > r.maxCoins) news.push('monedas');
+  if (!state.startStage) r.bestTime = Math.max(r.bestTime, state.time);
+  r.maxKills = Math.max(r.maxKills, state.kills); r.maxCoins = Math.max(r.maxCoins, state.coins);
+  r.totalKills += state.kills - b.kills; r.totalTime += state.time - b.time; r.totalCoins += state.coins - b.coins;
+  setRecords(r);
+  return news;
 }
 
 // Victoria: el Titán ha caído. Acaba la partida y se guarda una insignia para el mapa
@@ -2556,6 +2969,7 @@ function winGame() {
     `Tiempo: ${fmt(state.time)}  ·  Enemigos: ${state.kills}  ·  Monedas de la partida: ${state.coins}`;
   document.getElementById('records').textContent = news.length ? `★ ¡Nuevo récord de ${news.join(', ')}!` : '';
   document.getElementById('over').style.display = 'flex';
+  document.getElementById('infinite').style.display = state.practice ? 'none' : '';
 }
 
 function fmt(t) {
@@ -2594,7 +3008,9 @@ function drawEnemy(e) {
   ctx.save(); ctx.translate(e.x, e.y); ctx.rotate(e.angle);
   ctx.fillStyle = def.color; ctx.strokeStyle = 'rgba(255,255,255,.7)'; ctx.lineWidth = 2;
   if (def.rb) ctx.fillStyle = 'hsl(' + Math.floor((nowS() * 120 + (e.x + e.y) * 0.3) % 360) + ',85%,58%)';   // arcoíris
+  if (e.gT !== undefined && e.gT < 1.5 && Math.floor(nowS() * 10) % 2 === 0) ctx.fillStyle = '#fff';   // a punto de volver a crecer
   if (e.type === 'dash' && e.phase === 'wind' && Math.floor(e.phaseT * 14) % 2 === 0) ctx.fillStyle = '#fff';
+  if (e.flash > 0) ctx.fillStyle = '#fff';   // destello al recibir daño
   if (def.phantom) ctx.globalAlpha = (e.type === 'final2' ? 0.9 : e.type === 'ghostB' ? 0.8 : 0.55) + 0.1 * Math.sin(nowS() * 4);
   ctx.beginPath();
   if (e.type === 'sq') {
@@ -2712,6 +3128,18 @@ function drawBullet(b) {
     ctx.fillStyle = f > 0.6 ? '#fde047' : f > 0.3 ? '#fb923c' : '#ef4444';
     ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2); ctx.fill();
     ctx.globalAlpha = 1;
+  } else if (b.kind === 'wave') {
+    ctx.save(); ctx.translate(b.x, b.y); ctx.rotate(b.ang); ctx.lineCap = 'round'; ctx.shadowColor = '#7dd3fc'; ctx.shadowBlur = 20;
+    ctx.globalAlpha = Math.min(1, b.life * 3);
+    ctx.strokeStyle = '#7dd3fc'; ctx.lineWidth = 14; ctx.beginPath(); ctx.arc(-b.r * 0.6, 0, b.r * 1.5, -0.95, 0.95); ctx.stroke();
+    ctx.strokeStyle = '#fff'; ctx.lineWidth = 5; ctx.beginPath(); ctx.arc(-b.r * 0.6, 0, b.r * 1.5, -0.95, 0.95); ctx.stroke();
+    ctx.restore();
+  } else if (b.kind === 'disc') {
+    ctx.save(); ctx.translate(b.x, b.y); ctx.rotate(nowS() * 18);
+    ctx.fillStyle = '#e5e7eb'; ctx.strokeStyle = '#64748b'; ctx.lineWidth = 2;
+    ctx.beginPath(); star(8, b.r, b.r * 0.7); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = '#475569'; ctx.beginPath(); ctx.arc(0, 0, b.r * 0.3, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
   } else {
     ctx.fillStyle = b.color;
     ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2); ctx.fill();
@@ -2815,6 +3243,44 @@ function draw() {
       ctx.beginPath(); ctx.arc(f.x, f.y, f.r * (0.3 + 0.7 * k), 0, Math.PI * 2); ctx.fill();
       ctx.globalAlpha = 1 - k; ctx.strokeStyle = '#fff'; ctx.lineWidth = 3;
       ctx.beginPath(); ctx.arc(f.x, f.y, f.r * (0.3 + 0.7 * k), 0, Math.PI * 2); ctx.stroke();
+    } else if (f.kind === 'slash') {
+      // el filo avanza por el arco dejando una estela que se desvanece
+      const dir = f.dir || 1, sweep = Math.min(1, k / 0.45), a0 = f.a - dir * f.arc / 2, N = 22;
+      const cx = f.x, cy = f.y;
+      ctx.save(); ctx.lineCap = 'butt'; ctx.shadowColor = f.color; ctx.shadowBlur = 22;
+      const R = f.range * (0.92 + 0.08 * Math.min(1, k * 3));
+      if (f.mini) {   // ataque normal: una línea fina que se va formando
+        ctx.shadowBlur = 0; ctx.lineCap = 'round';
+        const fadeM = Math.max(0, 1 - Math.max(0, k - 0.35) / 0.65);
+        const L = f.lines || 1;
+        for (let li = 0; li < L; li++) {   // líneas contiguas paralelas (doble / triple corte)
+          const RR = R + (li - (L - 1) / 2) * 13;
+          for (let n = 0; n < N; n++) {
+            const u0 = n / N; if (u0 > sweep) break; const e1 = Math.min((n + 1) / N, sweep);
+            ctx.globalAlpha = (0.25 + 0.75 * (e1 / Math.max(sweep, 0.05))) * fadeM; ctx.strokeStyle = f.color === '#e0f2fe' ? '#fff' : f.color; ctx.lineWidth = 1.5 + 2.5 * (e1 / Math.max(sweep, 0.05));
+            ctx.beginPath(); ctx.arc(cx, cy, RR, a0 + dir * f.arc * u0, a0 + dir * f.arc * e1, dir < 0); ctx.stroke();
+          }
+        }
+        ctx.restore(); ctx.globalAlpha = 1; continue;
+      }
+      for (let n = 0; n < N; n++) {
+        const u0 = n / N, u1 = (n + 1) / N; if (u0 > sweep) break;
+        const e1 = Math.min(u1, sweep);
+        const fade = Math.max(0, 1 - Math.max(0, k - 0.3) / 0.7);
+        const body = Math.pow(u1 / Math.max(sweep, 0.05), 1.6);           // más grueso junto a la punta
+        ctx.globalAlpha = Math.min(1, body + 0.15) * fade;
+        ctx.strokeStyle = f.color; ctx.lineWidth = 4 + 22 * body * (1 - k * 0.5);
+        ctx.beginPath(); ctx.arc(cx, cy, R, a0 + dir * f.arc * u0, a0 + dir * f.arc * e1, dir < 0); ctx.stroke();
+        ctx.globalAlpha = Math.min(1, body + 0.2) * fade; ctx.strokeStyle = '#fff'; ctx.lineWidth = 2 + 7 * body * (1 - k * 0.5);
+        ctx.beginPath(); ctx.arc(cx, cy, R, a0 + dir * f.arc * u0, a0 + dir * f.arc * e1, dir < 0); ctx.stroke();
+      }
+      if (sweep < 1) {   // punta brillante del filo con chispas
+        const ah = a0 + dir * f.arc * sweep, hx = cx + Math.cos(ah) * R, hy = cy + Math.sin(ah) * R;
+        ctx.globalAlpha = 1; ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(hx, hy, 9, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = '#fff'; ctx.lineWidth = 2;
+        for (let q = 0; q < 5; q++) { const sa = ah + (Math.random() - 0.5) * 1.4, sl = 10 + Math.random() * 20; ctx.beginPath(); ctx.moveTo(hx, hy); ctx.lineTo(hx + Math.cos(sa) * sl, hy + Math.sin(sa) * sl); ctx.stroke(); }
+      }
+      ctx.restore();
     } else if (f.kind === 'laser') {
       ctx.globalAlpha = 1 - k; ctx.strokeStyle = f.color; ctx.lineWidth = 3 + 9 * (1 - k); ctx.lineCap = 'round';
       ctx.beginPath(); ctx.moveTo(f.x, f.y); ctx.lineTo(f.x2, f.y2); ctx.stroke();
@@ -2826,6 +3292,15 @@ function draw() {
   }
 
   if (!state.over) {
+    if (stats.weapon === 'sword' && lv_(stats.lv, 'sword_inf')) {   // aura brillante Infinito
+      const tt = nowS(), g = ctx.createRadialGradient(player.x, player.y, 18, player.x, player.y, 90);
+      g.addColorStop(0, 'rgba(253,230,138,0)'); g.addColorStop(0.8, 'rgba(253,230,138,0.12)'); g.addColorStop(1, 'rgba(255,255,255,0.35)');
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(player.x, player.y, 90, 0, Math.PI * 2); ctx.fill();
+      ctx.save(); ctx.shadowColor = '#fde68a'; ctx.shadowBlur = 18; ctx.strokeStyle = 'rgba(255,255,255,0.7)'; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(player.x, player.y, 90, 0, Math.PI * 2); ctx.stroke();
+      ctx.globalAlpha = 0.5; ctx.setLineDash([6, 14]); ctx.lineDashOffset = -tt * 40; ctx.beginPath(); ctx.arc(player.x, player.y, 80 + Math.sin(tt * 3) * 4, 0, Math.PI * 2); ctx.stroke();
+      ctx.restore(); ctx.setLineDash([]); ctx.globalAlpha = 1;
+    }
     const blink = player.invuln > 0 && Math.floor(player.invuln * 20) % 2 === 0;
     ctx.globalAlpha = blink ? 0.4 : 1;
     ctx.fillStyle = '#4cc9f0'; ctx.strokeStyle = '#fff'; ctx.lineWidth = 3;
@@ -2840,8 +3315,45 @@ function draw() {
         ctx.globalAlpha = 1;
       }
     }
-    const a = lastAim;
+    const a = lastAim, wpn = stats.weapon, ang0 = Math.atan2(a.y, a.x);
     ctx.strokeStyle = '#fff'; ctx.lineCap = 'round';
+    if (wpn === 'sword' || wpn === 'saw' || wpn === 'arc') {   // armas con aspecto propio en la mano
+      ctx.save(); ctx.translate(player.x, player.y); ctx.rotate(ang0);
+      if (wpn === 'sword') {   // espada básica: una katana guardada en su funda, colgando hacia atrás
+        // espadas arcoíris a un costado, con la hoja hacia atrás y la empuñadura hacia delante (1, 2 o 3 según Doble / Triple corte)
+        const nS = lv_(stats.lv, 'sword_triple') ? 3 : lv_(stats.lv, 'sword_double') ? 2 : 1, Rp = CFG.playerRadius;
+        const L = Rp * 4.4, th = Rp * 0.32, H = Rp * 1.1;
+        const cols = ['#ee1c25', '#ff8426', '#fff200', '#b5e61d', '#99d9ea', '#3f48cc', '#7a0bc0'], fr = [35, 66, 80, 94, 116, 131, 167], tot = 689;
+        for (let n = 0; n < nS; n++) {
+          ctx.save(); ctx.translate(Rp * 0.95, Rp * 0.9 + n * Rp * 0.62); ctx.rotate(-0.27); ctx.lineJoin = 'round';
+          let cum = 0;
+          for (let c = 0; c < 7; c++) { ctx.fillStyle = cols[c]; ctx.fillRect(-L + cum / tot * L, -th / 2, fr[c] / tot * L + 0.6, th); cum += fr[c]; }
+          ctx.strokeStyle = '#000'; ctx.lineWidth = 1.3; ctx.strokeRect(-L, -th / 2, L, th);
+          ctx.fillStyle = '#fff'; ctx.fillRect(0, -th * 0.4, H, th * 0.8); ctx.strokeRect(0, -th * 0.4, H, th * 0.8);   // empuñadura blanca
+          ctx.fillStyle = '#000'; ctx.beginPath(); ctx.ellipse(0, 0, th * 0.85, th * 2.6, 0, 0, Math.PI * 2); ctx.fill();   // guarda negra con relieve
+          ctx.strokeStyle = '#6b7280'; ctx.lineWidth = 1;
+          for (let q = -2; q <= 2; q++) { ctx.beginPath(); ctx.moveTo(-th * 0.6, q * th * 0.95 - th * 0.3); ctx.lineTo(th * 0.6, q * th * 0.95 + th * 0.3); ctx.stroke(); }
+          ctx.restore();
+        }
+      } else if (wpn === 'saw') {   // sierra: disco dentado girando en la mano
+        ctx.translate(CFG.playerRadius + 12, 0); ctx.rotate(nowS() * 6);
+        ctx.fillStyle = '#e5e7eb'; ctx.strokeStyle = '#64748b'; ctx.lineWidth = 2;
+        ctx.beginPath(); star(8, 17, 11); ctx.fill(); ctx.stroke();
+        ctx.fillStyle = '#475569'; ctx.beginPath(); ctx.arc(0, 0, 5, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#e5e7eb'; ctx.beginPath(); ctx.arc(0, 0, 2, 0, Math.PI * 2); ctx.fill();
+      } else {   // bastón de rayos: vara con bobinas y orbe eléctrico chisporroteante
+        ctx.fillStyle = '#475569'; ctx.fillRect(6, -3, 34, 6);
+        ctx.strokeStyle = '#7dd3fc'; ctx.lineWidth = 2;
+        for (let x = 14; x <= 32; x += 9) { ctx.beginPath(); ctx.moveTo(x, -6); ctx.lineTo(x, 6); ctx.stroke(); }
+        const tt = nowS(); ctx.save(); ctx.shadowColor = '#38bdf8'; ctx.shadowBlur = 16;
+        ctx.fillStyle = '#e0f2fe'; ctx.beginPath(); ctx.arc(46, 0, 8 + Math.sin(tt * 14) * 1.5, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#38bdf8'; ctx.beginPath(); ctx.arc(46, 0, 4, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = '#e0f2fe'; ctx.lineWidth = 1.5;
+        for (let q = 0; q < 3; q++) { const sa = Math.random() * 6.28; ctx.beginPath(); ctx.moveTo(46, 0); ctx.lineTo(46 + Math.cos(sa) * (10 + Math.random() * 8), Math.sin(sa) * (10 + Math.random() * 8)); ctx.stroke(); }
+        ctx.restore();
+      }
+      ctx.restore();
+    } else {
     const wid = { shotgun: 8, rifle: 4, mg: 4, flame: 9, launcher: 9 }[stats.weapon] || 5;
     const len = CFG.playerRadius + (stats.weapon === 'rifle' ? 18 : 10);
     ctx.lineWidth = wid;
@@ -2849,6 +3361,7 @@ function draw() {
     ctx.moveTo(player.x + a.x * 8, player.y + a.y * 8);
     ctx.lineTo(player.x + a.x * len, player.y + a.y * len);
     ctx.stroke();
+    }
     if (player.cd > 0 && player.cdMax > 0.1) {
       ctx.strokeStyle = 'rgba(255,255,255,.7)'; ctx.lineWidth = 3;
       ctx.beginPath();
@@ -2863,6 +3376,7 @@ function draw() {
   ctx.fillStyle = '#fff'; ctx.font = 'bold 28px system-ui'; ctx.textAlign = 'center';
   if (enemies.some(e => e.type === 'final' || e.type === 'final2' || e.type === 'final3' || e.type === 'final4')) ctx.fillStyle = '#fda4af';   // reloj parado durante el jefe
   ctx.fillText(state.practice ? 'PRUEBA' : fmt(state.time), W / 2, 40);
+  if (state.inf) { ctx.font = 'bold 14px system-ui'; ctx.fillStyle = '#c084fc'; ctx.fillText('∞ MODO INFINITO · vida enemiga x' + state.inf.m.toFixed(2) + ' · ' + fmt(state.inf.t), W / 2, 60); }
   ctx.fillStyle = '#fff';
   ctx.textAlign = 'left'; ctx.font = '14px system-ui';
   ctx.fillText('VIDA', 20, 26);
@@ -2874,6 +3388,11 @@ function draw() {
   ctx.font = '14px system-ui'; ctx.fillStyle = '#fff';
   const ownedN = Object.keys(WEAPONS).filter(id => owns(id, stats.lv)).length;
   ctx.fillText('Arma: ' + WEAPONS[stats.weapon].name + (ownedN > 1 ? '  (Q / E para cambiar)' : ''), 20, 98);
+  if (stats.weapon === 'sword') {
+    const sws = WEAPONS.sword.stats(stats.lv), ms = swModes(sws);
+    ctx.fillStyle = '#e0f2fe'; ctx.fillText('Ataque: ' + SW_NAMES[swMode(sws)] + (ms.length > 1 ? '  (Shift para cambiar)' : ''), 20, 118);
+    if (rbActive()) { ctx.fillStyle = RB_COLS[Math.floor(nowS() * 4) % 7]; ctx.fillText('Filo arcoíris' + (lv_(stats.lv, 'sword_rb') >= 3 ? '' : ': ' + Math.ceil(state.rbT) + ' s'), 20, 138); }
+  }
   ctx.textAlign = 'right'; ctx.font = '13px system-ui'; ctx.fillStyle = 'rgba(255,255,255,.6)';
   ctx.fillText('WASD: mover · Flechas / clic: disparar · Esc: pausa', W - 20, 28);
 
